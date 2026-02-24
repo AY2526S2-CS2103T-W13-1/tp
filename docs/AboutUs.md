@@ -19,12 +19,13 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 * Role: Developer
 
-### Jane Doe
+### Liu Zhiyuan
 
-<img src="images/johndoe.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+<img src="images/liuzhiyuan-source.png" width="200px">
+
+[[github](http://github.com/LIU-ZHIYUAN-source)]
+[[portfolio](team/zhiyuan.md)]
 
 * Role: Team Lead
 * Responsibilities: UI
