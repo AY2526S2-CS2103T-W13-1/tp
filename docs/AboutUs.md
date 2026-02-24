@@ -22,7 +22,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 ### Liu Zhiyuan
 
 
-<img src="images/liuzhiyuan-source.png" width="200px">
+<img src="images/liu-zhiyuan-source.png" width="200px">
 
 [[github](http://github.com/LIU-ZHIYUAN-source)]
 [[portfolio](team/zhiyuan.md)]
