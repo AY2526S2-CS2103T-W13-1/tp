@@ -8,7 +8,7 @@
         "about-us": "About Us",
         "project-team": "Project team",
         "khoo-wui-kong": "Khoo Wui Kong",
-        "jane-doe": "Jane Doe",
+        "liu-zhiyuan": "Liu Zhiyuan",
         "ong-yong-yue": "Ong Yong Yue",
         "ryan-ngau": "Ryan Ngau",
         "wong-han-yao": "Wong Han Yao"
@@ -141,6 +141,11 @@
       "headings": {
         "project-addressbook-level-3": "Project: AddressBook Level 3"
       },
+      "headingKeywords": {}
+    },
+    {
+      "src": "team/zhiyuan.md",
+      "headings": {},
       "headingKeywords": {}
     }
   ]
