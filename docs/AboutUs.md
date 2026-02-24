@@ -112,7 +112,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 [[github](http://github.com/superwhynot)]
 
-[[portfolio](team/johndoe.md)]
+[[portfolio](team/superwhynot.md)]
 
   
 
