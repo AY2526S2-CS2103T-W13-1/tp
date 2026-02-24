@@ -11,52 +11,48 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
-### John Doe
+### Khoo Wui Kong
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/wuikong.png" width="200px">
 
-[[homepage](http://www.comp.nus.edu.sg/~damithch)]
-[[github](https://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](https://github.com/wuikong)]
 
-* Role: Project Advisor
+* Role: Developer
 
-### Jane Doe
+### Liu Zhiyuan
 
-<img src="images/johndoe.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+<img src="images/liuzhiyuan-source.png" width="200px">
+
+[[github](http://github.com/LIU-ZHIYUAN-source)]
+[[portfolio](team/zhiyuan.md)]
 
 * Role: Team Lead
 * Responsibilities: UI
 
-### Liu Zhiyuan
+### Ong Yong Yue
 
-<img src="images/liuzhiyuan-source.png" width="200px">
+<img src="images/ongyongyue.png" width="200px">
 
-[[github](http://github.com/LIU-ZHIYUAN-source)] 
-[[portfolio](team/zhiyuan.md)]
+[[github](http://github.com/ongyongyue)] 
 
-* Role: Developer
-* Responsibilities: Data
+* Role: Team Member
+* Responsibilities: Do Stuff
 
-### Jean Doe
+### Ryan Ngau
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/creomeow.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](http://github.com/creomeow)]
 
 * Role: Developer
-* Responsibilities: Dev Ops + Threading
+* Responsibilities: intern
 
-### James Doe
+### Wong Han Yao
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/superwhynot.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](http://github.com/superwhynot)]
 
 * Role: Developer
 * Responsibilities: UI
