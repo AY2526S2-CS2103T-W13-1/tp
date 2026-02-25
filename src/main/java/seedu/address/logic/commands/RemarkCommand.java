@@ -23,13 +23,13 @@ public class RemarkCommand extends Command {
     public static final String MESSAGE_ARGUMENTS = "Index: %1$d, Remark: %2$s";
 
     private final Index index;
-    private final String remark;
+    private final Remark remark;
 
     /**
      * @param index  of the person in the filtered person list to edit the remark
      * @param remark of the person to be updated to
      */
-    public RemarkCommand(Index index, String remark) {
+    public RemarkCommand(Index index, Remark remark) {
         requireAllNonNull(index, remark);
 
         this.index = index;
