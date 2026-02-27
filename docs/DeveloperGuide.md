@@ -1,7 +1,7 @@
 ---
 layout: default.md
-  title: "Developer Guide"
-  pageNav: 3
+title: "Developer Guide"
+pageNav: 3
 ---
 # AB-3 Developer Guide
 
@@ -287,17 +287,26 @@ ClientVault enables Singapore residential property agents to capture, organize, 
 
 ### User stories
 
-Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
+Priorities: High (must have) - `* * * *`, Medium (nice to have) - `* * *`, Low (unlikely to have) - `* *`, Excluded - `*`
 
 
-| Priority | As a …                                    | I want to …                 | So that I can…                                                        |
-| ---------- | -------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------ |
-| `* * *`  | new user                                   | see usage instructions       | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person             |                                                                        |
-| `* * *`  | user                                       | delete a person              | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name        | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name         | locate a person easily                                                 |
+| Priority | As a …           | I want to …                 | So that I can…                                 |
+|-----|------------------| ------------------------------ |------------------------------------------------|
+| `* * * *` | property agent   | add a client with contact details and role (buyer/seller)       | retrieve them quickly during calls             |
+| `* * * *` | property agent   | view a client’s full profile using a command             | reference key details instantly                |
+| `* * * *` | property agent   | remove clients who are no longer buying/selling property             | reduce clutter                                 |
+| `* * * *` | property agent   | add a property listing with details (HDB/Condo, location, size, bedrooms, asking price, lease remaining)        | store the listings centrally                   |
+| `* * * *` | property agent   | list all active property listings  | quickly scan what I have available             |
+| `* * * *` | property agent   | delete property listings that have just been transacted         | reduce clutter                                 |
+| `* * *` | property agent   | find listings that match a buyer’s requirements (budget/type/location)             | suggest suitable homes quickly                 |
+| `* * *` | property agent   | update buyer requirements (budget, preferred location, type, min bedrooms)             | ensure matches remain accurate                 |
+| `* * *` | property agent   | update listing details (asking price, status, lease remaining)        | ensure information stays current               |
+| `* * *` | property agent   | see a compact summary (type, size, bedrooms, lease, price)  | answer quickly without opening multiple fields |
+| `* * *` | property agent   | use keyboard-friendly commands and aliases         | operate quickly without a mouse                |
+| `* *` | property agent   |  tag clients/listings (e.g., “urgent”, “hot lead”, “near MRT”)        | filter and prioritise easily                   |
+| `* *` | property agent   | set follow-up reminders  | stay on top of deadlines and next steps        |
+| `* *` | property agent   | record seller viewing time windows         | make scheduling smoother                       |
+| `*` | property agent   | export a client or listing summary         | share it with clients or teammates                                              |
 
 *{More to be added}*
 
