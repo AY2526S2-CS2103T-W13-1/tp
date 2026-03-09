@@ -80,7 +80,7 @@ public class Person {
     }
 
     /**
-     * Returns the String representation of a Set<Properties> for display
+     * Returns the String representation of a Set of Properties for display
      */
     public String propertiesToString() {
         if (this.properties.isEmpty()) {
