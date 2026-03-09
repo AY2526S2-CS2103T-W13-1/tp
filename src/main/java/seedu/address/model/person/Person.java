@@ -9,7 +9,7 @@ import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.tag.Tag;
-
+import seedu.address.model.person.Property;
 /**
  * Represents a Person in the address book.
  * Guarantees: details are present and not null, field values are validated, immutable.
@@ -24,7 +24,7 @@ public class Person {
     // Data fields
     private final Address address;
     private final Set<Tag> tags = new HashSet<>();
-    private Property property;
+    private final Property property;
 
     /**
      * Every field must be present and not null.
@@ -39,8 +39,8 @@ public class Person {
         this.property = null;
     }
 
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, tags, Property property);
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Property property) {
+        requireAllNonNull(name, phone, email, address, tags, property);
         this.name = name;
         this.phone = phone;
         this.email = email;

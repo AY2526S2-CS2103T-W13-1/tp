@@ -6,7 +6,8 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.property.Property;
+import seedu.address.model.person.Person;
+import seedu.address.model.person.Property;
 
 public class ViewPropertyCommand extends Command {
 
@@ -28,7 +29,7 @@ public class ViewPropertyCommand extends Command {
 
         Person personToView = lastShownList.get(index.getZeroBased());
 
-        if (personToView.getProperty().isNull()) {
+        if (personToView.getProperty() == null) {
             throw new CommandException(Messages.MESSAGE_INVALID_NO_PROPERTY);
         }
 

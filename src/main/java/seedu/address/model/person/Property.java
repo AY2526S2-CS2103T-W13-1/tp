@@ -1,4 +1,4 @@
-package seedu.address.model.property;
+package seedu.address.model.person;
 
 import static java.util.Objects.requireNonNull;
 
@@ -43,12 +43,16 @@ public class Property {
         return price;
     }
 
+    public String getSize() {
+        return size;
+    }
+
     @Override
     public String toString() {
         return String.format(
                 "Owner: %s\n" +
                 "Address: %s\n" +
-                "Type: %s\n"
+                "Type: %s\n" +
                 "Price : S$%s\n" +
                 "Size : %s\n",
                 this.getOwner(),
