@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.property.Property;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -24,32 +25,26 @@ public class Person {
     // Data fields
     private final Address address;
     private final Set<Tag> tags = new HashSet<>();
-    private final Property property;
+    private final Set<Property> properties = new HashSet<>();
 
     /**
      * Every field must be present and not null.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
+        this(name, phone, email, address, tags, Collections.emptySet());
+    }
+
+    /**
+     * Create the client
+     */
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Set<Property> properties) {
         requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.tags.addAll(tags);
-        this.property = null;
-    }
-
-    /**
-     * Every field must be present and not null, including property.
-     */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Property property) {
-        requireAllNonNull(name, phone, email, address, tags, property);
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.address = address;
-        this.tags.addAll(tags);
-        this.property = property;
+        this.properties.addAll(properties);
     }
 
     public Name getName() {
@@ -68,17 +63,36 @@ public class Person {
         return address;
     }
 
-    public Property getProperty() {
-        return property;
-    }
-
-
     /**
      * Returns an immutable tag set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
     public Set<Tag> getTags() {
         return Collections.unmodifiableSet(tags);
+    }
+
+    /**
+     * Returns an immutable property set, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public Set<Property> getProperties() {
+        return Collections.unmodifiableSet(properties);
+    }
+
+    /**
+     * Returns true if the person already has the given property.
+     */
+    public boolean hasProperty(Property property) {
+        return properties.stream().anyMatch(existingProperty -> existingProperty.isSameProperty(property));
+    }
+
+    /**
+     * Returns a new person with the given property added.
+     */
+    public Person addProperty(Property property) {
+        Set<Property> updatedProperties = new HashSet<>(properties);
+        updatedProperties.add(property);
+        return new Person(name, phone, email, address, tags, updatedProperties);
     }
 
     /**
@@ -114,13 +128,14 @@ public class Person {
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
-                && tags.equals(otherPerson.tags);
+                && tags.equals(otherPerson.tags)
+                && properties.equals(otherPerson.properties);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags);
+        return Objects.hash(name, phone, email, address, tags, properties);
     }
 
     @Override
@@ -131,6 +146,7 @@ public class Person {
                 .add("email", email)
                 .add("address", address)
                 .add("tags", tags)
+                .add("properties", properties)
                 .toString();
     }
 
