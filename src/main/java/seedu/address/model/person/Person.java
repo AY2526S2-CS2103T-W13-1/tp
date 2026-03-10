@@ -23,26 +23,24 @@ public class Person {
     private final Email email;
 
     // Data fields
-    private final Address address;
     private final Set<Tag> tags = new HashSet<>();
     private final Set<Property> properties = new HashSet<>();
 
     /**
      * Every field must be present and not null.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        this(name, phone, email, address, tags, Collections.emptySet());
+    public Person(Name name, Phone phone, Email email, Set<Tag> tags) {
+        this(name, phone, email, tags, Collections.emptySet());
     }
 
     /**
      * Create the client
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, Set<Property> properties) {
-        requireAllNonNull(name, phone, email, address, tags);
+    public Person(Name name, Phone phone, Email email, Set<Tag> tags, Set<Property> properties) {
+        requireAllNonNull(name, phone, email, tags);
         this.name = name;
         this.phone = phone;
         this.email = email;
-        this.address = address;
         this.tags.addAll(tags);
         this.properties.addAll(properties);
     }
@@ -57,10 +55,6 @@ public class Person {
 
     public Email getEmail() {
         return email;
-    }
-
-    public Address getAddress() {
-        return address;
     }
 
     /**
@@ -112,7 +106,7 @@ public class Person {
     public Person addProperty(Property property) {
         Set<Property> updatedProperties = new HashSet<>(properties);
         updatedProperties.add(property);
-        return new Person(name, phone, email, address, tags, updatedProperties);
+        return new Person(name, phone, email, tags, updatedProperties);
     }
 
     /**
@@ -147,7 +141,6 @@ public class Person {
         return name.equals(otherPerson.name)
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
-                && address.equals(otherPerson.address)
                 && tags.equals(otherPerson.tags)
                 && properties.equals(otherPerson.properties);
     }
@@ -155,7 +148,7 @@ public class Person {
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, properties);
+        return Objects.hash(name, phone, email, tags, properties);
     }
 
     @Override
@@ -164,7 +157,6 @@ public class Person {
                 .add("name", name)
                 .add("phone", phone)
                 .add("email", email)
-                .add("address", address)
                 .add("tags", tags)
                 .add("properties", properties)
                 .toString();
