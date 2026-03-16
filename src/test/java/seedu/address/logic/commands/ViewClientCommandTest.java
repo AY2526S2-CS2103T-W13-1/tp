@@ -77,9 +77,9 @@ public class ViewClientCommandTest {
     @Test
     public void toStringMethod() {
         NameContainsKeywordsPredicate predicate = new NameContainsKeywordsPredicate(Arrays.asList("keyword"));
-        ViewClientCommand ViewClientCommand = new ViewClientCommand(predicate);
+        ViewClientCommand viewClientCommand = new ViewClientCommand(predicate);
         String expected = ViewClientCommand.class.getCanonicalName() + "{predicate=" + predicate + "}";
-        assertEquals(expected, ViewClientCommand.toString());
+        assertEquals(expected, viewClientCommand.toString());
     }
 
     /**

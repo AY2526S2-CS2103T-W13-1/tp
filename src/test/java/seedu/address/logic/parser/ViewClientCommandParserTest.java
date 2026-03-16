@@ -17,7 +17,8 @@ public class ViewClientCommandParserTest {
 
     @Test
     public void parse_emptyArg_throwsParseException() {
-        assertParseFailure(parser, "Alice", String.format(MESSAGE_INVALID_COMMAND_FORMAT, ViewClientCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, "Alice", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                 ViewClientCommand.MESSAGE_USAGE));
     }
 
     @Test
@@ -25,7 +26,7 @@ public class ViewClientCommandParserTest {
         // no leading and trailing whitespaces
         ViewClientCommand expectedViewClientCommand =
                 new ViewClientCommand(new NameContainsKeywordsPredicate(Arrays.asList("Alice", "Bob")));
-        assertParseSuccess(parser, "n/Alice Bob", expectedViewClientCommand);
+        assertParseSuccess(parser, " n/Alice Bob", expectedViewClientCommand);
 
         // multiple whitespaces between keywords
         assertParseSuccess(parser, " n/ Alice \n \t Bob  \t", expectedViewClientCommand);
