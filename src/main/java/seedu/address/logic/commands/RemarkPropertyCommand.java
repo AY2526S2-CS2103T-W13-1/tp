@@ -18,7 +18,7 @@ import seedu.address.model.property.Property;
  */
 public class RemarkPropertyCommand extends Command {
 
-    public static final String COMMAND_WORD = "remarkproperty";
+    public static final String COMMAND_WORD = "remarkProperty";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Updates the remark of the property identified "
