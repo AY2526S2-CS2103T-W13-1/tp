@@ -16,6 +16,7 @@ import seedu.address.logic.commands.DeleteClientCommand;
 import seedu.address.logic.commands.DeletePropertyCommand;
 import seedu.address.logic.commands.EditClientCommand;
 import seedu.address.logic.commands.EditCommand;
+import seedu.address.logic.commands.EditPropertyCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
@@ -92,6 +93,9 @@ public class AddressBookParser {
 
         case EditClientCommand.COMMAND_WORD:
             return new EditClientCommandParser().parse(arguments);
+
+        case EditPropertyCommand.COMMAND_WORD:
+            return new EditPropertyCommandParser().parse(arguments);
 
         default:
             logger.finer("This user input caused a ParseException: " + userInput);

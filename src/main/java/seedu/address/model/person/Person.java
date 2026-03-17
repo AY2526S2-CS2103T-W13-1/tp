@@ -3,7 +3,7 @@ package seedu.address.model.person;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,8 +23,8 @@ public class Person {
     private final Email email;
 
     // Data fields
-    private final Set<Tag> tags = new HashSet<>();
-    private final Set<Property> properties = new HashSet<>();
+    private final Set<Tag> tags = new LinkedHashSet<>();
+    private final Set<Property> properties = new LinkedHashSet<>();
 
     /**
      * Every field must be present and not null.
@@ -104,7 +104,7 @@ public class Person {
      * Returns a new person with the given property added.
      */
     public Person addProperty(Property property) {
-        Set<Property> updatedProperties = new HashSet<>(properties);
+        Set<Property> updatedProperties = new LinkedHashSet<>(properties);
         updatedProperties.add(property);
         return new Person(name, phone, email, tags, updatedProperties);
     }
