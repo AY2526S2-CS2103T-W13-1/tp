@@ -21,6 +21,7 @@ import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.RemarkPropertyCommand;
 import seedu.address.logic.commands.ViewClientCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
@@ -74,6 +75,13 @@ public class AddressBookParserTest {
         ViewClientCommand command = (ViewClientCommand) parser.parseCommand(
                 ViewClientCommand.COMMAND_WORD + " n/" + keywords.stream().collect(Collectors.joining(" ")));
         assertEquals(new ViewClientCommand(new NameContainsKeywordsPredicate(keywords)), command);
+    }
+
+    @Test
+    public void parseCommand_remarkProperty() throws Exception {
+        RemarkPropertyCommand command = (RemarkPropertyCommand) parser.parseCommand(
+                RemarkPropertyCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased() + " r/Near MRT");
+        assertEquals(new RemarkPropertyCommand(INDEX_FIRST_PERSON, "Near MRT"), command);
     }
 
     @Test

@@ -154,4 +154,40 @@ public class JsonAdaptedPropertyTest {
                 PropertyType.MESSAGE_CONSTRAINTS,
                 property::toModelType);
     }
+
+    @Test
+    public void constructor_fromPropertySource_success() throws Exception {
+        Property source = new Property(
+                new PropertyAddress(VALID_ADDRESS),
+                new Price(VALID_PRICE),
+                new Size(VALID_SIZE),
+                new PropertyType(VALID_TYPE));
+        source.setRemarks(VALID_REMARKS);
+
+        JsonAdaptedProperty adapted = new JsonAdaptedProperty(source);
+        Property result = adapted.toModelType();
+
+        assertEquals(new PropertyAddress(VALID_ADDRESS), result.getAddress());
+        assertEquals(new Price(VALID_PRICE), result.getPrice());
+        assertEquals(new Size(VALID_SIZE), result.getSize());
+        assertEquals(new PropertyType(VALID_TYPE), result.getPropertyType());
+        assertEquals(VALID_REMARKS, result.getRemarks());
+    }
+
+    @Test
+    public void constructor_fromPropertySourceNoTypeNoRemarks_success() throws Exception {
+        Property source = new Property(
+                new PropertyAddress(VALID_ADDRESS),
+                new Price(VALID_PRICE),
+                new Size(VALID_SIZE));
+
+        JsonAdaptedProperty adapted = new JsonAdaptedProperty(source);
+        Property result = adapted.toModelType();
+
+        assertEquals(new PropertyAddress(VALID_ADDRESS), result.getAddress());
+        assertEquals(new Price(VALID_PRICE), result.getPrice());
+        assertEquals(new Size(VALID_SIZE), result.getSize());
+        assertNull(result.getPropertyType());
+        assertNull(result.getRemarks());
+    }
 }

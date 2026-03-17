@@ -1,6 +1,8 @@
 package seedu.address.model.property;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
@@ -41,6 +43,58 @@ public class PropertyTest {
 
         Property differentAddress = new Property(new PropertyAddress("456 Orchard Road"), validPrice, validSize);
         assertFalse(property.isSameProperty(differentAddress));
+    }
+    @Test
+    public void toString_withPropertyType_includesType() {
+        Property property = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
+        assertTrue(property.toString().contains("Type: HDB"));
+    }
+
+    @Test
+    public void toString_withoutPropertyType_noTypeLabel() {
+        Property property = new Property(validAddress, validPrice, validSize);
+        assertFalse(property.toString().contains("Type:"));
+    }
+
+    @Test
+    public void equals_differentPropertyType_returnsFalse() {
+        Property property = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
+        Property differentType = new Property(validAddress, validPrice, validSize, new PropertyType("Condo"));
+        assertFalse(property.equals(differentType));
+    }
+
+    @Test
+    public void equals_samePropertyType_returnsTrue() {
+        Property property = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
+        Property sameType = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
+        assertTrue(property.equals(sameType));
+    }
+
+    @Test
+    public void equals_oneNullPropertyType_returnsFalse() {
+        Property withType = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
+        Property withoutType = new Property(validAddress, validPrice, validSize);
+        assertFalse(withType.equals(withoutType));
+    }
+
+    @Test
+    public void withRemarks_preservesAllFields() {
+        Property property = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
+        Property withRemarks = property.withRemarks("Near MRT");
+
+        assertEquals("Near MRT", withRemarks.getRemarks());
+        assertEquals(property.getAddress(), withRemarks.getAddress());
+        assertEquals(property.getPrice(), withRemarks.getPrice());
+        assertEquals(property.getSize(), withRemarks.getSize());
+        assertEquals(property.getPropertyType(), withRemarks.getPropertyType());
+    }
+
+    @Test
+    public void setAndGetRemarks() {
+        Property property = new Property(validAddress, validPrice, validSize);
+        assertNull(property.getRemarks());
+        property.setRemarks("Near MRT");
+        assertEquals("Near MRT", property.getRemarks());
     }
 
     @Test
