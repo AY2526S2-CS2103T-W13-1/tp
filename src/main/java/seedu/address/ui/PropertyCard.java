@@ -2,6 +2,7 @@ package seedu.address.ui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.property.Property;
@@ -13,6 +14,7 @@ public class PropertyCard extends UiPart<Region> {
 
     private static final String FXML = "PropertyCard.fxml";
 
+    /** The property displayed by this card. */
     public final Property property;
 
     @FXML
@@ -25,9 +27,16 @@ public class PropertyCard extends UiPart<Region> {
     private Label price;
     @FXML
     private Label size;
+    @FXML
+    private FlowPane tags;
+    @FXML
+    private Label remarks;
 
     /**
      * Creates a {@code PropertyCard} with the given {@code Property} and index to display.
+     *
+     * @param property The property to display.
+     * @param displayedIndex The index to show on the card.
      */
     public PropertyCard(Property property, int displayedIndex) {
         super(FXML);
@@ -36,5 +45,19 @@ public class PropertyCard extends UiPart<Region> {
         propertyAddress.setText(property.getAddress().toString());
         price.setText("Price: $" + property.getPrice());
         size.setText("Size: " + property.getSize() + " sqft");
+
+        if (property.getPropertyType() != null) {
+            Label typeLabel = new Label(property.getPropertyType().value);
+            typeLabel.getStyleClass().add("label");
+            tags.getChildren().add(typeLabel);
+        }
+
+        String propertyRemarks = property.getRemarks();
+        if (propertyRemarks != null && !propertyRemarks.isBlank()) {
+            remarks.setText("Remarks: " + propertyRemarks);
+        } else {
+            remarks.setVisible(false);
+            remarks.setManaged(false);
+        }
     }
 }

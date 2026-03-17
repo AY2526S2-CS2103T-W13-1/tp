@@ -5,6 +5,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_LISTING_INDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PRICE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SIZE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TYPE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
@@ -15,6 +16,7 @@ import seedu.address.logic.commands.AddPropertyCommand;
 import seedu.address.model.property.Price;
 import seedu.address.model.property.Property;
 import seedu.address.model.property.PropertyAddress;
+import seedu.address.model.property.PropertyType;
 import seedu.address.model.property.Size;
 
 public class AddPropertyCommandParserTest {
@@ -121,6 +123,37 @@ public class AddPropertyCommandParserTest {
                 + PREFIX_SIZE + INVALID_SIZE;
 
         assertParseFailure(parser, userInput, Size.MESSAGE_CONSTRAINTS);
+    }
+
+    @Test
+    public void parse_withValidType_success() {
+        String userInput = " "
+                + PREFIX_LISTING_INDEX + "1 "
+                + PREFIX_ADDRESS + VALID_ADDRESS + " "
+                + PREFIX_PRICE + VALID_PRICE + " "
+                + PREFIX_SIZE + VALID_SIZE + " "
+                + PREFIX_TYPE + "HDB";
+
+        Property property = new Property(
+                new PropertyAddress(VALID_ADDRESS),
+                new Price(VALID_PRICE),
+                new Size(VALID_SIZE),
+                new PropertyType("HDB"));
+        AddPropertyCommand expectedCommand = new AddPropertyCommand(Index.fromOneBased(1), property);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_withInvalidType_failure() {
+        String userInput = " "
+                + PREFIX_LISTING_INDEX + "1 "
+                + PREFIX_ADDRESS + VALID_ADDRESS + " "
+                + PREFIX_PRICE + VALID_PRICE + " "
+                + PREFIX_SIZE + VALID_SIZE + " "
+                + PREFIX_TYPE + "@@@invalid";
+
+        assertParseFailure(parser, userInput, PropertyType.MESSAGE_CONSTRAINTS);
     }
 
     @Test
