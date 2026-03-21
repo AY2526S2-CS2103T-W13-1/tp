@@ -141,6 +141,32 @@ Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
 
+### Editing a client: `editClient`
+
+Edits the details of the client identified by the index number used in the displayed client list.  
+Existing values will be overwritten by the input values.
+
+Format: `editClient INDEX [n/NAME] [c/PHONE] [e/EMAIL]`
+
+<box type="tip" seamless>
+
+**Tip:** At least one of the optional fields must be provided.  
+**Tip:** Only the specified fields will be updated; all other fields will remain unchanged.
+
+</box>
+
+Examples:
+* `editClient 1 c/91234567 e/johndoe@example.com`
+* `editClient 2 n/Alex Yeoh`
+
+<box type="warning" seamless>
+
+**Warning:** The specified index must refer to a valid client in the current displayed list.  
+**Warning:** Editing a client to match an existing client is not allowed.
+
+</box>
+
+
 ### Locating persons by name: `find`
 
 Finds persons whose names contain any of the given keywords.
