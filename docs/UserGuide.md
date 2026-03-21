@@ -159,8 +159,9 @@ Format: `editProperty CLIENT_INDEX i/PROPERTY_INDEX [a/ADDRESS] [pr/PRICE] [s/SI
 
 <box type="tip" seamless>
 
-**Tip:** At least one of the optional fields must be provided.  
-**Tip:** Only the specified fields will be updated; all other fields will remain unchanged.
+**Tip:**
+- At least one of the optional fields must be provided.
+- Only the specified fields will be updated; all other fields will remain unchanged.
 
 </box>
 
