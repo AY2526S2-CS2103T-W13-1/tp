@@ -173,11 +173,11 @@ Examples:
 * `editProperty 3 i/2 s/1400`
 
 
-### Locating persons by name: `find`
+### Filtering clients by name: `filterClient`
 
-Finds persons whose names contain any of the given keywords.
+Finds clients whose names contain any of the given keywords.
 
-Format: `find KEYWORD [MORE_KEYWORDS]`
+Format: `filterClient n/KEYWORD [MORE_KEYWORDS]`
 
 * The search is case-insensitive. e.g `hans` will match `Hans`
 * The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
@@ -185,11 +185,12 @@ Format: `find KEYWORD [MORE_KEYWORDS]`
 * Only full words will be matched e.g. `Han` will not match `Hans`
 * Persons matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
+* The property list will show all properties that belong to any of the matched clients.
 
 Examples:
-* `find John` returns `john` and `John Doe`
-* `find alex david` returns `Alex Yeoh`, `David Li`<br>
-  ![result for 'find alex david'](images/findAlexDavidResult.png)
+* `filterClient n/John` returns `john` and `John Doe`
+* `filterClient n/alex david` returns `Alex Yeoh`, `David Li`<br>
+  ![result for 'filterClient n/alex david'](images/findAlexDavidResult.png)
 
 ### Deleting a client : `deleteClient`
 
@@ -261,6 +262,6 @@ Action            | Format, Examples
 **Clear**         | `clear`
 **Delete Client** | `deleteClient INDEX`<br> e.g., `deleteClient 3`
 **Edit**          | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
-**Find**          | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
+**Filter Client** | `filterClient n/KEYWORD [MORE_KEYWORDS]`<br> e.g., `filterClient n/James Jake`
 **List**          | `list`
 **Help**          | `help`
