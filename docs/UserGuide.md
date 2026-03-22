@@ -257,9 +257,11 @@ _Details coming soon ..._
 Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **Add**    | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
+**Add Property** | `addProperty li/INDEX a/ADDRESS p/PRICE s/SIZE [type/TYPE]` <br> e.g., `addProperty l/1 a/311 Clementi Ave 2, #02-25 pr/1200000 s/1200 type/HDB`
 **Clear**  | `clear`
 **Delete Property** | `deleteProperty INDEX`<br> e.g., `deleteProperty 3`
-**Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
+**Edit Client** | `editClient INDEX [n/NAME] [c/PHONE] [e/EMAIL]`<br> e.g., `editClient 2 n/Alex Yeoh`
+**Edit Property** | `editProperty CLIENT_INDEX i/PROPERTY_INDEX [a/ADDRESS] [pr/PRICE] [s/SIZE]`<br> e.g., `editProperty 1 i/1 a/123 Clementi Road pr/500000 s/1200`
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list`
 **Help**   | `help`
