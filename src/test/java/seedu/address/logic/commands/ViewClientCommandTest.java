@@ -1,7 +1,11 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +27,7 @@ import seedu.address.model.property.PropertyAddress;
 import seedu.address.model.property.Size;
 import seedu.address.model.tag.Tag;
 
-public class ViewPropertyCommandTest {
+public class ViewClientCommandTest {
 
     private final Model model = new ModelManager();
 
@@ -50,7 +54,7 @@ public class ViewPropertyCommandTest {
 
         model.addPerson(person);
 
-        ViewPropertyCommand command = new ViewPropertyCommand(Index.fromZeroBased(0));
+        ViewClientCommand command = new ViewClientCommand(Index.fromZeroBased(0));
 
         CommandResult result = command.execute(model);
 
@@ -61,7 +65,7 @@ public class ViewPropertyCommandTest {
 
     @Test
     public void execute_invalidIndex_throwsCommandException() {
-        ViewPropertyCommand command = new ViewPropertyCommand(Index.fromZeroBased(5));
+        ViewClientCommand command = new ViewClientCommand(Index.fromZeroBased(5));
 
         assertThrows(CommandException.class,
                 Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX, () -> command.execute(model)
@@ -69,10 +73,9 @@ public class ViewPropertyCommandTest {
     }
 
     @Test
-    public void execute_noProperties_throwsCommandException() {
+    public void execute_noProperties_success() throws Exception {
         Set<Tag> tags = new HashSet<>();
         Set<Property> properties = new HashSet<>(); // empty property set
-
         Person person = new Person(
                 new Name("Bob"),
                 new Phone("98765432"),
@@ -83,10 +86,33 @@ public class ViewPropertyCommandTest {
 
         model.addPerson(person);
 
-        ViewPropertyCommand command = new ViewPropertyCommand(Index.fromZeroBased(0));
+        ViewClientCommand command = new ViewClientCommand(Index.fromZeroBased(0));
 
-        assertThrows(CommandException.class,
-                Messages.MESSAGE_INVALID_NO_PROPERTY, () -> command.execute(model)
-        );
+        CommandResult result = command.execute(model);
+
+        assertEquals(String.format(Messages.MESSAGE_PROPERTIES_LISTED_OVERVIEW, 0), result.getFeedbackToUser());
+        assertEquals(person, model.getFilteredPersonList().get(0));
+    }
+
+    @Test
+    public void equals() {
+        ViewClientCommand viewFirstCommand = new ViewClientCommand(INDEX_FIRST_PERSON);
+        ViewClientCommand viewSecondCommand = new ViewClientCommand(INDEX_SECOND_PERSON);
+
+        // same object -> returns true
+        assertTrue(viewFirstCommand.equals(viewFirstCommand));
+
+        // same values -> returns true
+        ViewClientCommand viewFirstCommandCopy = new ViewClientCommand(INDEX_FIRST_PERSON);
+        assertTrue(viewFirstCommand.equals(viewFirstCommandCopy));
+
+        // different types -> returns false
+        assertFalse(viewFirstCommand.equals(1));
+
+        // null -> returns false
+        assertFalse(viewFirstCommand.equals(null));
+
+        // different client -> returns false
+        assertFalse(viewFirstCommand.equals(viewSecondCommand));
     }
 }
