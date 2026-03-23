@@ -31,7 +31,7 @@ ClientVault is a **desktop app for managing clients and properties, optimized fo
 
    * `list` : Lists all contacts.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
+   * `add n/John Doe c/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
 
    * `deleteClient 3` : Deletes the 3rd client shown in the current client list.
 
@@ -59,7 +59,7 @@ ClientVault is a **desktop app for managing clients and properties, optimized fo
   e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
 
 * Parameters can be in any order.<br>
-  e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
+  e.g. if the command specifies `n/NAME c/CONTACT`, `c/CONTACT n/NAME` is also acceptable.
 
 * Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
@@ -76,20 +76,21 @@ Shows a message explaining how to access the help page.
 Format: `help`
 
 
-### Adding a person: `add`
+### Adding a person: `addClient`
 
 Adds a person to the address book.
 
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
+Format: `add n/NAME c/CONTACT e/EMAIL [t/TAG]…​`
 
 <box type="tip" seamless>
 
-**Tip:** A person can have any number of tags (including 0)
+**Tip:** 
+- A person can have any number of tags (including 0)
 </box>
 
 Examples:
-* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+* `add n/John Doe c/98765432 e/johnd@example.com`
+* `add n/Betsy Crowe t/friend e/betsycrowe@example.com c/1234567 t/criminal`
 
 ### Adding a property: `addProperty`
 
@@ -109,36 +110,43 @@ Examples:
 * `addProperty l/1 a/311 Clementi Ave 2, #02-25 pr/1200000 s/1200 type/HDB`
 * `addProperty l/2 a/10 Orchard Road pr/2500000 s/1800`
 
-
 ### Listing all clients and their properties : `list`
 
 Shows a list of all clients and their properties in the address book.
 
 Format: `list`
 
-### Editing a person : `edit`
+### Viewing a client's details: `viewClient`
 
-Edits an existing person in the address book.
+Shows the client's information and properties owned by client by index.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
+Format: `viewClient INDEX`
 
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
-* At least one of the optional fields must be provided.
-* Existing values will be updated to the input values.
-* When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.
-* You can remove all the person’s tags by typing `t/` without
-    specifying any tags after it.
+* Narrows to the person at the specified `INDEX`. 
+* The index refers to the index number shown in the displayed list on the client tab. 
+* The index **must be a positive integer** 1, 2, 3, …​
 
 Examples:
-*  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
-*  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
+*  `viewClient 1`views all relevant information with respect to the specified client.
+
+### Viewing a client's details: `viewProperty`
+
+Shows the Property's information and all it's owners by index.
+
+Format: `viewProperty INDEX`
+
+* Narrows to the property at the specified `INDEX`. The index refers to the index number shown in the displayed list on the property tab.
+* The index **must be a positive integer** 1, 2, 3, …​
+
+Examples:
+*  `viewProperty 1`views all relevant information with respect to the specified property.
 
 ### Editing a client: `editClient`
 
 Edits the details of the client identified by the index number used in the displayed client list.  
 Existing values will be overwritten by the input values.
 
-Format: `editClient INDEX [n/NAME] [c/PHONE] [e/EMAIL]`
+Format: `editClient INDEX [n/NAME] [c/CONTACT] [e/EMAIL]`
 
 <box type="tip" seamless>
 
@@ -306,12 +314,12 @@ _Details coming soon ..._
 
 Action              | Format, Examples
 --------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add**             | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
+**Add**             | `add n/NAME c/CONTACT e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho c/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
 **Add Property**    | `addProperty li/INDEX a/ADDRESS p/PRICE s/SIZE [type/TYPE]` <br> e.g., `addProperty l/1 a/311 Clementi Ave 2, #02-25 pr/1200000 s/1200 type/HDB`
 **Clear**           | `clear`
 **Delete Client**   | `deleteClient INDEX`<br> e.g., `deleteClient 3`
 **Delete Property** | `deleteProperty INDEX`<br> e.g., `deleteProperty 3`
-**Edit Client**     | `editClient INDEX [n/NAME] [c/PHONE] [e/EMAIL]`<br> e.g., `editClient 2 n/Alex Yeoh`
+**Edit Client**     | `editClient INDEX [n/NAME] [c/CONTACT] [e/EMAIL]`<br> e.g., `editClient 2 n/Alex Yeoh`
 **Edit Property**   | `editProperty CLIENT_INDEX i/PROPERTY_INDEX [a/ADDRESS] [pr/PRICE] [s/SIZE]`<br> e.g., `editProperty 1 i/1 a/123 Clementi Road pr/500000 s/1200`
 **Filter Client**   | `filterClient n/KEYWORD [MORE_KEYWORDS]`<br> e.g., `filterClient n/James Jake`
 **Filter Property** | `filterProperty a/KEYWORD [MORE_KEYWORDS]`<br> e.g., `filterProperty a/Clementi Dover`
