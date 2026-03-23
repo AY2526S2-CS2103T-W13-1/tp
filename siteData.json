@@ -119,6 +119,7 @@
         "editing-a-person-edit": "Editing a person : edit",
         "editing-a-client-editclient": "Editing a client: editClient",
         "editing-a-property-editproperty": "Editing a property: editProperty",
+        "adding-remarks-to-a-property-remarkproperty": "Adding remarks to a property : remarkProperty",
         "filtering-clients-by-name-filterclient": "Filtering clients by name: filterClient",
         "filtering-properties-by-address-filterproperty": "Filtering properties by address: filterProperty",
         "deleting-a-client-deleteclient": "Deleting a client : deleteClient",
