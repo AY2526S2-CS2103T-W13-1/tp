@@ -1,7 +1,11 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -88,5 +92,27 @@ public class ViewClientCommandTest {
 
         assertEquals(String.format(Messages.MESSAGE_PROPERTIES_LISTED_OVERVIEW, 0), result.getFeedbackToUser());
         assertEquals(person, model.getFilteredPersonList().get(0));
+    }
+
+    @Test
+    public void equals() {
+        ViewClientCommand viewFirstCommand = new ViewClientCommand(INDEX_FIRST_PERSON);
+        ViewClientCommand viewSecondCommand = new ViewClientCommand(INDEX_SECOND_PERSON);
+
+        // same object -> returns true
+        assertTrue(viewFirstCommand.equals(viewFirstCommand));
+
+        // same values -> returns true
+        ViewClientCommand viewFirstCommandCopy = new ViewClientCommand(INDEX_FIRST_PERSON);
+        assertTrue(viewFirstCommand.equals(viewFirstCommandCopy));
+
+        // different types -> returns false
+        assertFalse(viewFirstCommand.equals(1));
+
+        // null -> returns false
+        assertFalse(viewFirstCommand.equals(null));
+
+        // different client -> returns false
+        assertFalse(viewFirstCommand.equals(viewSecondCommand));
     }
 }
