@@ -130,6 +130,7 @@ public class AddPropertyCommandTest {
         assertFalse(firstCommand.equals(null));
         assertFalse(firstCommand.equals(1));
         assertFalse(firstCommand.equals(secondCommand));
+        assertFalse(firstCommand.equals(new AddPropertyCommand(List.of(INDEX_SECOND_PERSON), validProperty)));
     }
 
     @Test
