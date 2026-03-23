@@ -1,9 +1,13 @@
 package seedu.address.logic.parser;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.core.index.Index;
+import seedu.address.logic.commands.ViewClientCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 class ViewClientCommandParserTest {
@@ -23,5 +27,10 @@ class ViewClientCommandParserTest {
 
         // Zero is invalid (Index is 1-based)
         assertThrows(ParseException.class, () -> parser.parse("0"));
+    }
+
+    @Test
+    void parse_validArgs_returnsViewClientCommand() {
+        assertParseSuccess(parser, "1", new ViewClientCommand(INDEX_FIRST_PERSON));
     }
 }
