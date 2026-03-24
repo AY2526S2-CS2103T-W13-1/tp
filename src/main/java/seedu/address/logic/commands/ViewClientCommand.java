@@ -37,7 +37,8 @@ public class ViewClientCommand extends Command {
 
         model.updateFilteredPersonList(p -> p.isSamePerson(personToView));
         model.updateFilteredPropertyList(
-                p -> lastShownList.stream().anyMatch(person -> person.getProperties().contains(p)));
+                p -> lastShownList.stream().anyMatch(person -> person.getProperties().contains(p)
+                        && person.isSamePerson(personToView)));
 
         return new CommandResult(
                 String.format(Messages.MESSAGE_PROPERTIES_LISTED_OVERVIEW, model.getFilteredPropertyList().size()));

@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
+import static seedu.address.testutil.TypicalPersons.ALICE;
+import static seedu.address.testutil.TypicalPersons.BENSON;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,7 +35,6 @@ public class ViewClientCommandTest {
 
     @Test
     public void execute_validIndex_success() throws Exception {
-        Set<Tag> tags = new HashSet<>();
         Set<Property> properties = new HashSet<>();
 
         Property property = new Property(
@@ -43,16 +44,10 @@ public class ViewClientCommandTest {
         );
         properties.add(property);
 
-        // Person constructor no longer has Address
-        Person person = new Person(
-                new Name("Alice"),
-                new Phone("91234567"),
-                new Email("alice@email.com"),
-                tags,
-                properties
-        );
-
-        model.addPerson(person);
+        Person aliceWithProperty = ALICE.addProperty(property);
+        model.addPerson(aliceWithProperty);
+        Person bensonWithProperty = BENSON.addProperty(property);
+        model.addPerson(bensonWithProperty);
 
         ViewClientCommand command = new ViewClientCommand(Index.fromZeroBased(0));
 
@@ -60,7 +55,7 @@ public class ViewClientCommandTest {
 
         assertEquals(String.format(Messages.MESSAGE_PROPERTIES_LISTED_OVERVIEW, model.getFilteredPropertyList().size()),
                 result.getFeedbackToUser());
-        assertEquals(person, model.getFilteredPersonList().get(0));
+        assertEquals(aliceWithProperty, model.getFilteredPersonList().get(0));
     }
 
     @Test
