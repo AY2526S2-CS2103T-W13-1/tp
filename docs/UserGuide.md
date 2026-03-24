@@ -327,4 +327,4 @@ Action              | Format, Examples
 **Filter Property** | `filterProperty a/KEYWORD [MORE_KEYWORDS]`<br> e.g., `filterProperty a/Clementi Dover`
 **List**            | `list`
 **Help**            | `help`
-**Remark Property** | `remarkProperty CLIENT_INDEX i/PROPERTY_INDEX r/REMARKS`
+**Remark Property** | `remarkProperty CLIENT_INDEX i/PROPERTY_INDEX r/REMARKS` <br> e.g., `remarkProperty 2 i/1 r/Near Chinese Garden MRT`
