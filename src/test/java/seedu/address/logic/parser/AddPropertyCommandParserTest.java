@@ -93,6 +93,13 @@ public class AddPropertyCommandParserTest {
     }
 
     @Test
+    public void parse_multipleIndices_failure() {
+        assertParseFailure(parser,
+                " i/1 i/2 a/311 Clementi Ave 2 pr/1200000 s/1200",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
+    }
+
+    @Test
     public void parse_invalidAddress_failure() {
         String userInput = " "
                 + PREFIX_LISTING_INDEX + "1 "
