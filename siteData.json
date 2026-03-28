@@ -40,7 +40,7 @@
       "src": "DeveloperGuide.md",
       "title": "Developer Guide",
       "headings": {
-        "ab-3-developer-guide": "AB-3 Developer Guide",
+        "clientvault-developer-guide": "ClientVault Developer Guide",
         "acknowledgements": "Acknowledgements",
         "setting-up-getting-started": "Setting up, getting started",
         "design": "Design",
@@ -123,7 +123,7 @@
         "editing-a-property-editproperty": "Editing a property: editProperty",
         "adding-remarks-to-a-property-remarkproperty": "Adding remarks to a property : remarkProperty",
         "filtering-clients-by-name-filterclient": "Filtering clients by name: filterClient",
-        "filtering-properties-by-address-filterproperty": "Filtering properties by address: filterProperty",
+        "filtering-properties-filterproperty": "Filtering properties: filterProperty",
         "deleting-a-client-deleteclient": "Deleting a client : deleteClient",
         "deleting-a-property-deleteproperty": "Deleting a property : deleteProperty",
         "clearing-all-entries-clear": "Clearing all entries : clear",
