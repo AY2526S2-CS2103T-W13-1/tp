@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.ViewClientCommand.MESSAGE_CLIENT_VIEWED_SUCCESS;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
@@ -49,7 +50,7 @@ public class ViewClientCommandTest {
 
         CommandResult result = command.execute(model);
 
-        assertEquals(String.format(Messages.MESSAGE_PROPERTIES_LISTED_OVERVIEW, model.getFilteredPropertyList().size()),
+        assertEquals(String.format(MESSAGE_CLIENT_VIEWED_SUCCESS, Messages.format(aliceWithProperty)),
                 result.getFeedbackToUser());
         assertEquals(aliceWithProperty, model.getFilteredPersonList().get(0));
     }
@@ -71,7 +72,7 @@ public class ViewClientCommandTest {
 
         CommandResult result = command.execute(model);
 
-        assertEquals(String.format(Messages.MESSAGE_PROPERTIES_LISTED_OVERVIEW, 0), result.getFeedbackToUser());
+        assertEquals(String.format(MESSAGE_CLIENT_VIEWED_SUCCESS, Messages.format(ALICE)), result.getFeedbackToUser());
         assertEquals(ALICE, model.getFilteredPersonList().get(0));
     }
 
@@ -97,7 +98,8 @@ public class ViewClientCommandTest {
 
         CommandResult result = command.execute(model);
 
-        assertEquals(String.format(Messages.MESSAGE_PROPERTIES_LISTED_OVERVIEW, 1), result.getFeedbackToUser());
+        assertEquals(String.format(MESSAGE_CLIENT_VIEWED_SUCCESS,
+                Messages.format(bensonWithProperty)), result.getFeedbackToUser());
         assertEquals(1, model.getFilteredPropertyList().size());
         assertTrue(model.getFilteredPropertyList().contains(bensonOnlyProperty));
         assertFalse(model.getFilteredPropertyList().contains(aliceOnlyProperty));

@@ -15,6 +15,13 @@ public class ViewClientCommand extends Command {
 
     public static final String COMMAND_WORD = "viewClient";
 
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Displays the information of the client identified "
+            + "by the index number used in the displayed client list, as well as the properties that the client owns.\n"
+            + "Parameters: INDEX (must be a positive integer)\n"
+            + "Example: " + COMMAND_WORD + " 1";
+
+    public static final String MESSAGE_CLIENT_VIEWED_SUCCESS = "Client viewed: %1$s";
+
     private final Index index;
 
     /**
@@ -40,7 +47,7 @@ public class ViewClientCommand extends Command {
                 p -> lastShownList.stream().anyMatch(person -> person.getProperties().contains(p)));
 
         return new CommandResult(
-                String.format(Messages.MESSAGE_PROPERTIES_LISTED_OVERVIEW, model.getFilteredPropertyList().size()));
+                String.format(MESSAGE_CLIENT_VIEWED_SUCCESS, Messages.format(personToView)));
     }
 
     @Override

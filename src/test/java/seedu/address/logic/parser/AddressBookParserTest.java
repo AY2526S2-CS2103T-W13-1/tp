@@ -27,7 +27,7 @@ import seedu.address.logic.commands.ViewPropertyCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
-import seedu.address.model.property.PropertyAddressContainsKeywordsPredicate;
+import seedu.address.model.property.PropertyMatchesFilterPredicate;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
 
@@ -74,7 +74,8 @@ public class AddressBookParserTest {
         List<String> keywords = Arrays.asList("clementi", "punggol");
         FilterPropertyCommand command = (FilterPropertyCommand) parser.parseCommand(
                 FilterPropertyCommand.COMMAND_WORD + " a/" + keywords.stream().collect(Collectors.joining(" ")));
-        assertEquals(new FilterPropertyCommand(new PropertyAddressContainsKeywordsPredicate(keywords)), command);
+        assertEquals(new FilterPropertyCommand(new PropertyMatchesFilterPredicate(
+            keywords, 0, Long.MAX_VALUE, 0, Long.MAX_VALUE)), command);
     }
 
     @Test
