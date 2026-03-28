@@ -3,7 +3,7 @@ layout: default.md
 title: "Developer Guide"
 pageNav: 3
 ---
-# AB-3 Developer Guide
+# ClientVault Developer Guide
 
 <!-- * Table of Contents -->
 
@@ -184,15 +184,15 @@ The following sequence diagram illustrates the interactions:
 
 ### Filter Property feature
 
-The filter property feature allows users to filter properties by address keywords and automatically display the owners of those properties. This is done by updating the predicates on the `FilteredList` objects.
+The filter property feature allows users to filter properties by address keywords, price range, and size range, and automatically display the owners of those properties. This is done by updating the predicates on the `FilteredList` objects.
 
 The `FilterPropertyCommand` is executed through the following flow:
 
-1. The command is executed with a property predicate (`PropertyAddressContainsKeywordsPredicate`) built from the user input.
+1. The command is executed with a property predicate (`PropertyMatchesFilterPredicate`) built from the user input, which may include address keywords, price range, and/or size range.
 2. `FilterPropertyCommand` calls `Model#updateFilteredPropertyList(predicate)`.
 3. `ModelManager#updateFilteredPropertyList(...)` updates the property `FilteredList` by calling `setPredicate(...)`.
-4. `FilterPropertyCommand` then calls `Model#updateFilteredPersonList(ownersOfFilteredProperties)`.
-5. `ModelManager#updateFilteredPersonList(...)` updates the person `FilteredList` by calling `setPredicate(...)`.
+4. `FilterPropertyCommand` then calls `Model#updateFilteredPersonList(predicate)`.
+5. `ModelManager#updateFilteredPersonList(...)` updates the person `FilteredList` by calling `setPredicate(ownersOfFilteredProperties)`.
 6. The command returns a `CommandResult` after both filtered lists have been updated.
 
 The following sequence diagram illustrates the interactions:
@@ -201,9 +201,11 @@ The following sequence diagram illustrates the interactions:
 
 #### Design Highlights
 
-* **Predicate-based Filtering**: The `PropertyAddressContainsKeywordsPredicate` implements the `Predicate<Property>` interface, allowing flexible filtering logic.
-* **Keyword Matching**: The predicate supports multiple keywords and performs case-insensitive matching using `StringUtil.containsWordIgnoreCase()`.
+* **Multi-criteria Filtering**: The `PropertyMatchesFilterPredicate` implements the `Predicate<Property>` interface and supports filtering by address keywords, price range, and size range simultaneously.
+* **Address Keyword Matching**: The predicate supports multiple address keywords and performs case-insensitive matching using `StringUtil.containsWordIgnoreCase()`. Keywords use OR logic (properties matching any keyword are included).
+* **Numeric Range Filtering**: The predicate supports optional minimum and maximum price and size boundaries. A property must fall within all specified ranges to match.
 * **Cascading Filter**: After filtering properties, the command automatically updates the person list to show only those who own matching properties, providing a complete view of relevant data.
+* **Flexible Criteria**: At least one filter criterion (address keywords, price range, or size range) must be provided, but users can combine any of these filters as needed.
 
 ### \[Proposed\] Undo/redo feature
 

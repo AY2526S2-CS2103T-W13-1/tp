@@ -234,25 +234,49 @@ Examples:
 * `filterClient n/John` returns `john` and `John Doe`
 * `filterClient n/alex david` returns `Alex Yeoh`, `David Li`<br>
 
-### Filtering properties by address: `filterProperty`
+### Filtering properties: `filterProperty`
 
 ![filterProperty](images/filterProperty.png)
-Finds properties whose addresses contain any of the given keywords.
+Finds properties that match the given address keywords and/or price and size ranges.
 
-Format: `filterProperty a/KEYWORD [MORE_KEYWORDS]`
+Format: `filterProperty [a/ADDRESS_KEYWORDS] [pr/MIN_PRICE MAX_PRICE] [s/MIN_SIZE MAX_SIZE]`
 
+<box type="tip" seamless>
+
+**Tip:**
+
+- At least one filter criterion (address keywords, price range, or size range) must be provided.
+- Multiple filter criteria can be combined in a single command.
+- The client list will show all clients that own any of the matched properties.
+
+</box>
+
+**Address Keyword Matching:**
 * The search is case-insensitive. e.g `jurong` will match `Jurong`
 * The order of the keywords does not matter. e.g. `Buona Vista` will match `Vista Buona`
-* Only the address is searched.
 * Only full words will be matched e.g. `Woodland` will not match `Woodlands`
 * Properties matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `View Street` will return `Clementi Street 3`, `East View`
-* The client list will show all clients that own any of the matched properties.
+
+**Price Range Filtering:**
+* Specify `pr/MIN_PRICE MAX_PRICE` to find properties within a price range.
+* Both boundaries are inclusive.
+* `MIN_PRICE` must be a non-negative integer.
+* It does not matter which value is larger; the command will automatically determine the min and max.
+
+**Size Range Filtering:**
+* Specify `s/MIN_SIZE MAX_SIZE` to find properties within a size range.
+* Both boundaries are inclusive.
+* `MIN_SIZE` must be a non-negative integer.
+* It does not matter which value is larger; the command will automatically determine the min and max.
 
 Examples:
 
-* `filterProperty a/Bukit` returns `Bukit Timah` and `Bukit Panjang`
-* `filterProperty a/punggol changi` returns `Punggol Central`, `Changi South`
+* `filterProperty a/Bukit` returns properties with "Bukit" in the address.
+* `filterProperty a/punggol changi` returns properties with either "Punggol" or "Changi" in the address.
+* `filterProperty pr/1000000 2000000` returns properties priced between 1,000,000 and 2,000,000.
+* `filterProperty s/800 1200` returns properties with sizes between 800 and 1200 sqft.
+* `filterProperty a/Clementi pr/1000000 1500000 s/1000 1500` returns properties in Clementi, priced 1-1.5M, and sized 1000-1500 sqft.
 
 ### Deleting a client : `deleteClient`
 
@@ -347,7 +371,7 @@ Action              | Format, Examples
 **Edit Client**     | `editClient INDEX [n/NAME] [c/CONTACT] [e/EMAIL]`<br> e.g., `editClient 2 n/Alex Yeoh`
 **Edit Property**   | `editProperty CLIENT_INDEX i/PROPERTY_INDEX [a/ADDRESS] [pr/PRICE] [s/SIZE]`<br> e.g., `editProperty 1 i/1 a/123 Clementi Road pr/500000 s/1200`
 **Filter Client**   | `filterClient n/KEYWORD [MORE_KEYWORDS]`<br> e.g., `filterClient n/James Jake`
-**Filter Property** | `filterProperty a/KEYWORD [MORE_KEYWORDS]`<br> e.g., `filterProperty a/Clementi Dover`
+**Filter Property** | `filterProperty [a/ADDRESS_KEYWORDS] [pr/MIN_PRICE MAX_PRICE] [s/MIN_SIZE MAX_SIZE]`<br> e.g., `filterProperty a/Clementi pr/1000000 1500000 s/1000 1500`
 **List**            | `list`
 **Help**            | `help`
 **Remark Property** | `remarkProperty CLIENT_INDEX i/PROPERTY_INDEX r/REMARKS` <br> e.g., `remarkProperty 2 i/1 r/Near Chinese Garden MRT`
