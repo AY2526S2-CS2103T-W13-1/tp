@@ -41,12 +41,12 @@ public class FilterTypeCommandTest {
 
         // Add properties with different types
         addPropertyWithTypeToModel(model, INDEX_FIRST_PERSON, "311 Clementi Ave 2", "1200000", "1200", "HDB");
-        addPropertyWithTypeToModel(model, INDEX_FIRST_PERSON, "50 Jurong East St 24", "850000", "1000", "Condo");
+        addPropertyWithTypeToModel(model, INDEX_FIRST_PERSON, "50 Jurong East St 24", "8500", "1000", "Condo");
         addPropertyWithTypeToModel(model, INDEX_SECOND_PERSON, "10 Punggol Walk", "950000", "1100", "HDB");
         addPropertyWithTypeToModel(model, INDEX_THIRD_PERSON, "20 Orchard Road", "2000000", "800", "Condo");
 
         addPropertyWithTypeToModel(expectedModel, INDEX_FIRST_PERSON, "311 Clementi Ave 2", "1200000", "1200", "HDB");
-        addPropertyWithTypeToModel(expectedModel, INDEX_FIRST_PERSON, "50 Jurong East St 24", "850000", "1000", "Condo");
+        addPropertyWithTypeToModel(expectedModel, INDEX_FIRST_PERSON, "50 Jurong East St 24", "8500", "1000", "Condo");
         addPropertyWithTypeToModel(expectedModel, INDEX_SECOND_PERSON, "10 Punggol Walk", "950000", "1100", "HDB");
         addPropertyWithTypeToModel(expectedModel, INDEX_THIRD_PERSON, "20 Orchard Road", "2000000", "800", "Condo");
     }
