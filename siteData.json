@@ -110,6 +110,7 @@
     },
     {
       "src": "UserGuide.md",
+      "title": "User Guide",
       "headings": {
         "clientvault-user-guide": "ClientVault User Guide",
         "quick-start": "Quick start",
