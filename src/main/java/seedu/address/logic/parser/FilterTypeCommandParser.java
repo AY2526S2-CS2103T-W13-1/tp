@@ -29,7 +29,14 @@ public class FilterTypeCommandParser implements Parser<FilterTypeCommand> {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterTypeCommand.MESSAGE_USAGE));
         }
 
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_TYPE);
+
         if (argMultimap.getValue(PREFIX_TYPE).isEmpty()) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterTypeCommand.MESSAGE_USAGE));
+        }
+
+        if (argMultimap.getValue(PREFIX_TYPE).get().isBlank()) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterTypeCommand.MESSAGE_USAGE));
         }
@@ -37,14 +44,15 @@ public class FilterTypeCommandParser implements Parser<FilterTypeCommand> {
         String type = argMultimap.getValue(PREFIX_TYPE).get();
         String[] typeKeywords = type.split("\\s+");
 
+        if (typeKeywords.length != 1) {
+            throw new ParseException("Only one type is allowed. Use 'HDB' or 'Condo' (case-insensitive).");
+        }
+
+        String keyword = typeKeywords[0].toLowerCase();
+        if (!keyword.equals("hdb") && !keyword.equals("condo")) {
+            throw new ParseException("Invalid type. Only 'HDB' or 'Condo' are allowed (case-insensitive).");
+        }
+
         return new FilterTypeCommand(new PropertyTypeContainsKeywordsPredicate(Arrays.asList(typeKeywords)));
     }
 }
-
-
-
-
-
-
-
-
