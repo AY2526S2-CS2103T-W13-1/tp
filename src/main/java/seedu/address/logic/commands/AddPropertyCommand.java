@@ -24,7 +24,7 @@ public class AddPropertyCommand extends Command {
     public static final String COMMAND_WORD = "addProperty";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a property to the client identified "
-            + "by the index number used in the displayed person list. "
+            + "by the index number used in the displayed person list. \n"
             + "Parameters: "
             + PREFIX_LISTING_INDEX + "CLIENT_INDEX "
             + PREFIX_ADDRESS + "ADDRESS "
