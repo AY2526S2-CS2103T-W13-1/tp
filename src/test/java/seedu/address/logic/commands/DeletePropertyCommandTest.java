@@ -10,7 +10,6 @@ import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
@@ -24,7 +23,6 @@ import seedu.address.model.property.Property;
 import seedu.address.model.property.PropertyAddress;
 import seedu.address.model.property.Size;
 import seedu.address.testutil.TypicalIndexes;
-import seedu.address.testutil.TypicalPersons;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for
