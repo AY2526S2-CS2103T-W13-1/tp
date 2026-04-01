@@ -93,7 +93,8 @@ public class EditPropertyCommand extends Command {
             throw new CommandException(MESSAGE_PROPERTY_OWNER_NOT_FOUND);
         }
 
-        //@Liu Zhiyuan use chatgpt to help with writing next 8 lines to ensure the order of property will not be changed.
+        //@Liu Zhiyuan use chatgpt to help with writing next 8 lines
+        //to ensure the order of property will not be changed.
         Set<Property> updatedProperties = new LinkedHashSet<>();
         for (Property p : owner.getProperties()) {
             if (p.equals(propertyToEdit)) {
