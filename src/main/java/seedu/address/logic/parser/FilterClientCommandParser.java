@@ -28,9 +28,22 @@ public class FilterClientCommandParser implements Parser<FilterClientCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterClientCommand.MESSAGE_USAGE));
         }
 
-        String name = argMultimap.getValue(PREFIX_NAME).orElse("");
+        if (argMultimap.getValue(PREFIX_NAME).isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterClientCommand.MESSAGE_USAGE));
+        }
+
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME);
+
+        String name = argMultimap.getValue(PREFIX_NAME).orElse("").trim();
+
+        if (name.isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterClientCommand.MESSAGE_USAGE));
+        }
 
         String[] nameKeywords = name.split("\\s+");
+        for (String nameKeyword : nameKeywords) {
+            ParserUtil.parseName(nameKeyword);
+        }
 
         return new FilterClientCommand(new NameContainsKeywordsPredicate(Arrays.asList(nameKeywords)));
     }
