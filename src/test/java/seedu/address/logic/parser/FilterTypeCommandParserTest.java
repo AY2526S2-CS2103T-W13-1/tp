@@ -37,6 +37,12 @@ public class FilterTypeCommandParserTest {
     }
 
     @Test
+    public void parse_doublePrefixKeyword_throwsParseException() {
+        assertParseFailure(parser, "type/HDB type/Condo", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                FilterTypeCommand.MESSAGE_USAGE));
+    }
+
+    @Test
     public void parse_validSingleKeyword_returnsFilterTypeCommand() {
         // Single keyword HDB
         FilterTypeCommand expectedFilterTypeCommand =
