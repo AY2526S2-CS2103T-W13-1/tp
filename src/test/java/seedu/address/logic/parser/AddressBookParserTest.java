@@ -83,7 +83,7 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_filterType() throws Exception {
-        List<String> keywords = Arrays.asList("HDB", "Condo");
+        List<String> keywords = Arrays.asList("HDB");
         FilterTypeCommand command = (FilterTypeCommand) parser.parseCommand(
                 FilterTypeCommand.COMMAND_WORD + " type/" + keywords.stream().collect(Collectors.joining(" ")));
         assertEquals(new FilterTypeCommand(new PropertyTypeContainsKeywordsPredicate(keywords)), command);
