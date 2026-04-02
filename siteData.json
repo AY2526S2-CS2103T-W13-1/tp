@@ -124,7 +124,7 @@
         "editing-a-client-editclient": "Editing a client: editClient",
         "editing-a-property-editproperty": "Editing a property: editProperty",
         "adding-remarks-to-a-property-remarkproperty": "Adding remarks to a property : remarkProperty",
-        "filtering-clients-by-name-filterclient": "Filtering clients by name: filterClient",
+        "filtering-clients-by-name-and-or-tag-filterclient": "Filtering clients by name and/or tag: filterClient",
         "filtering-properties-filterproperty": "Filtering properties: filterProperty",
         "filtering-properties-by-type-filtertype": "Filtering properties by type: filterType",
         "deleting-a-client-deleteclient": "Deleting a client : deleteClient",
