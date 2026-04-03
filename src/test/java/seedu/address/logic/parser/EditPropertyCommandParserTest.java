@@ -11,6 +11,7 @@ import seedu.address.logic.commands.EditPropertyCommand;
 import seedu.address.logic.commands.EditPropertyCommand.EditPropertyDescriptor;
 import seedu.address.model.property.Price;
 import seedu.address.model.property.PropertyAddress;
+import seedu.address.model.property.PropertyType;
 import seedu.address.model.property.Size;
 
 public class EditPropertyCommandParserTest {
@@ -20,6 +21,8 @@ public class EditPropertyCommandParserTest {
     private static final String VALID_PRICE_BOB = "950000";
     private static final String VALID_SIZE_AMY = "1200";
     private static final String VALID_SIZE_BOB = "980";
+    private static final String VALID_TYPE_AMY = "HDB";
+    private static final String VALID_TYPE_BOB = "Condo";
 
     private static final String ADDRESS_DESC_AMY = " a/" + VALID_ADDRESS_AMY;
     private static final String ADDRESS_DESC_BOB = " a/" + VALID_ADDRESS_BOB;
@@ -27,6 +30,8 @@ public class EditPropertyCommandParserTest {
     private static final String PRICE_DESC_BOB = " pr/" + VALID_PRICE_BOB;
     private static final String SIZE_DESC_AMY = " s/" + VALID_SIZE_AMY;
     private static final String SIZE_DESC_BOB = " s/" + VALID_SIZE_BOB;
+    private static final String TYPE_DESC_AMY = " type/" + VALID_TYPE_AMY;
+    private static final String TYPE_DESC_BOB = " type/" + VALID_TYPE_BOB;
 
     private static final String INVALID_ADDRESS_DESC = " a/";
     private static final String INVALID_PRICE_DESC = " pr/abc";
@@ -41,12 +46,13 @@ public class EditPropertyCommandParserTest {
     public void parse_allFieldsSpecified_success() {
         Index index = Index.fromOneBased(1);
 
-        String userInput = "1" + ADDRESS_DESC_AMY + PRICE_DESC_AMY + SIZE_DESC_AMY;
+        String userInput = "1" + ADDRESS_DESC_AMY + PRICE_DESC_AMY + SIZE_DESC_AMY + TYPE_DESC_AMY;
 
         EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
         descriptor.setAddress(new PropertyAddress(VALID_ADDRESS_AMY));
         descriptor.setPrice(new Price(VALID_PRICE_AMY));
         descriptor.setSize(new Size(VALID_SIZE_AMY));
+        descriptor.setType(new PropertyType(VALID_TYPE_AMY));
 
         EditPropertyCommand expectedCommand =
                 new EditPropertyCommand(index, descriptor);
@@ -75,18 +81,25 @@ public class EditPropertyCommandParserTest {
         assertParseSuccess(parser,
                 "1" + SIZE_DESC_AMY,
                 new EditPropertyCommand(index, sizeDescriptor));
+
+        EditPropertyDescriptor typeDescriptor = new EditPropertyDescriptor();
+        typeDescriptor.setType(new PropertyType(VALID_TYPE_AMY));
+        assertParseSuccess(parser,
+                "1" + TYPE_DESC_AMY,
+                new EditPropertyCommand(index, typeDescriptor));
     }
 
     @Test
     public void parse_multipleFieldsSpecified_success() {
         Index index = Index.fromOneBased(2);
 
-        String userInput = "2" + ADDRESS_DESC_BOB + PRICE_DESC_BOB + SIZE_DESC_BOB;
+        String userInput = "2" + ADDRESS_DESC_BOB + PRICE_DESC_BOB + SIZE_DESC_BOB + TYPE_DESC_BOB;
 
         EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
         descriptor.setAddress(new PropertyAddress(VALID_ADDRESS_BOB));
         descriptor.setPrice(new Price(VALID_PRICE_BOB));
         descriptor.setSize(new Size(VALID_SIZE_BOB));
+        descriptor.setType(new PropertyType(VALID_TYPE_BOB));
 
         EditPropertyCommand expectedCommand = new EditPropertyCommand(index, descriptor);
 
@@ -100,12 +113,14 @@ public class EditPropertyCommandParserTest {
         String userInput = "1"
                 + ADDRESS_DESC_AMY + ADDRESS_DESC_BOB
                 + PRICE_DESC_AMY + PRICE_DESC_BOB
-                + SIZE_DESC_AMY + SIZE_DESC_BOB;
+                + SIZE_DESC_AMY + SIZE_DESC_BOB
+                + TYPE_DESC_AMY + TYPE_DESC_BOB;
 
         EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
         descriptor.setAddress(new PropertyAddress(VALID_ADDRESS_BOB));
         descriptor.setPrice(new Price(VALID_PRICE_BOB));
         descriptor.setSize(new Size(VALID_SIZE_BOB));
+        descriptor.setType(new PropertyType(VALID_TYPE_BOB));
 
         EditPropertyCommand expectedCommand = new EditPropertyCommand(index, descriptor);
 
@@ -132,6 +147,13 @@ public class EditPropertyCommandParserTest {
         assertParseFailure(parser,
                 "abc" + ADDRESS_DESC_AMY,
                 MESSAGE_INVALID_FORMAT);
+    }
+
+    @Test
+    public void parse_invalidType_failure() {
+        assertParseFailure(parser,
+                "1 type/villa",
+                PropertyType.MESSAGE_CONSTRAINTS);
     }
 
     @Test

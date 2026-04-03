@@ -182,6 +182,43 @@ The following sequence diagram illustrates the interactions:
 
 <puml src="diagrams/AddPropertySequenceDiagram.puml" alt="AddProperty sequence diagram" />
 
+### Edit Client feature
+
+The Edit Client feature allows users to update the details of an existing client identified by an index in the displayed client list. Editable fields include the client’s name, phone number, email, and tags.
+
+The `EditClientCommand` is executed through the following steps:
+
+1. The command retrieves the currently displayed client list.
+2. The target client is identified using the provided index.
+3. A new `Person` object is created by combining the original client’s unchanged fields with the updated fields provided by the user.
+4. The command checks whether the edited client would duplicate another existing client.
+5. If valid, the updated client replaces the original client in the model.
+6. The filtered client list is updated to show the edited client.
+7. The filtered property list is updated to show the properties owned by the edited client.
+8. The command returns a `CommandResult` indicating success.
+
+If one or more `t/` prefixes are provided, the client’s existing tags are replaced by the new set of tags. If `t/` is provided without a value, all existing tags are cleared.
+
+### Edit Property feature
+
+The `editProperty` feature allows users to edit an existing property identified by its index in the displayed property list. Users may update the property's address, price, size, and type.
+
+The `EditPropertyCommand` is executed through the following steps:
+
+1. The command retrieves the currently displayed property list.
+2. The target property is identified using the given index.
+3. The command checks that at least one field is provided for editing.
+4. A new `Property` object is created by combining the original property's unchanged fields with the updated fields provided by the user.
+5. The command checks that the edited property does not duplicate another property in the address book.
+6. The command identifies the client who owns the target property.
+7. Since properties are stored within each client, the property is updated through its owner instead of being modified independently.
+8. A new `Person` object is created with the edited property replacing the original one.
+9. The updated client replaces the original client in the model.
+10. The filtered property list and filtered client list are updated accordingly.
+11. The command returns a `CommandResult` indicating the success of the operation.
+
+Only the specified fields are updated. All other fields remain unchanged.
+
 ### Delete Property feature
 
 The delete property feature allows users to delete a property identified by the index in the displayed property list.

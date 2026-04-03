@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PRICE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SIZE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TYPE;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -34,11 +35,13 @@ public class EditPropertyCommand extends Command {
             + "Parameters: INDEX (must be a positive integer) "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_PRICE + "PRICE] "
-            + "[" + PREFIX_SIZE + "SIZE]\n"
+            + "[" + PREFIX_SIZE + "SIZE] "
+            + "[" + PREFIX_TYPE + "TYPE]\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_ADDRESS + "123 Clementi Road "
             + PREFIX_PRICE + "500000 "
-            + PREFIX_SIZE + "1200";
+            + PREFIX_SIZE + "1200 "
+            + PREFIX_TYPE + "HDB";
 
     public static final String MESSAGE_EDIT_PROPERTY_SUCCESS = "Edited Property: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
@@ -139,7 +142,7 @@ public class EditPropertyCommand extends Command {
         PropertyAddress updatedAddress = editPropertyDescriptor.getAddress().orElse(propertyToEdit.getAddress());
         Price updatedPrice = editPropertyDescriptor.getPrice().orElse(propertyToEdit.getPrice());
         Size updatedSize = editPropertyDescriptor.getSize().orElse(propertyToEdit.getSize());
-        PropertyType updatedType = propertyToEdit.getPropertyType();
+        PropertyType updatedType = editPropertyDescriptor.getType().orElse(propertyToEdit.getPropertyType());
         return new Property(updatedAddress, updatedPrice, updatedSize, updatedType);
     }
 
@@ -166,6 +169,7 @@ public class EditPropertyCommand extends Command {
         private PropertyAddress address;
         private Price price;
         private Size size;
+        private PropertyType type;
 
         public EditPropertyDescriptor() {
         }
@@ -177,13 +181,14 @@ public class EditPropertyCommand extends Command {
             setAddress(toCopy.address);
             setPrice(toCopy.price);
             setSize(toCopy.size);
+            setType(toCopy.type);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(address, price, size);
+            return CollectionUtil.isAnyNonNull(address, price, size, type);
         }
 
         public void setAddress(PropertyAddress address) {
@@ -192,6 +197,10 @@ public class EditPropertyCommand extends Command {
 
         public Optional<PropertyAddress> getAddress() {
             return Optional.ofNullable(address);
+        }
+
+        public void setType(PropertyType type) {
+            this.type = type;
         }
 
         public void setPrice(Price price) {
@@ -210,6 +219,10 @@ public class EditPropertyCommand extends Command {
             return Optional.ofNullable(size);
         }
 
+        public Optional<PropertyType> getType() {
+            return Optional.ofNullable(type);
+        }
+
         @Override
         public boolean equals(Object other) {
             if (other == this) {
@@ -223,7 +236,8 @@ public class EditPropertyCommand extends Command {
             EditPropertyDescriptor otherDescriptor = (EditPropertyDescriptor) other;
             return Objects.equals(address, otherDescriptor.address)
                     && Objects.equals(price, otherDescriptor.price)
-                    && Objects.equals(size, otherDescriptor.size);
+                    && Objects.equals(size, otherDescriptor.size)
+                    && Objects.equals(type, otherDescriptor.type);
         }
     }
 }

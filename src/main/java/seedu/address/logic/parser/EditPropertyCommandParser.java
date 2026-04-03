@@ -7,6 +7,7 @@ import static seedu.address.logic.commands.EditPropertyCommand.MESSAGE_USAGE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PRICE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SIZE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TYPE;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.EditPropertyCommand;
@@ -29,7 +30,7 @@ public class EditPropertyCommandParser implements Parser<EditPropertyCommand> {
         requireNonNull(args);
 
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_ADDRESS, PREFIX_PRICE, PREFIX_SIZE);
+                ArgumentTokenizer.tokenize(args, PREFIX_ADDRESS, PREFIX_PRICE, PREFIX_SIZE, PREFIX_TYPE);
 
         Index index;
 
@@ -52,6 +53,10 @@ public class EditPropertyCommandParser implements Parser<EditPropertyCommand> {
         if (argMultimap.getValue(PREFIX_SIZE).isPresent()) {
             editPropertyDescriptor.setSize(
                     ParserUtil.parseSize(argMultimap.getValue(PREFIX_SIZE).get()));
+        }
+        if (argMultimap.getValue(PREFIX_TYPE).isPresent()) {
+            editPropertyDescriptor.setType(
+                    ParserUtil.parsePropertyType(argMultimap.getValue(PREFIX_TYPE).get()));
         }
 
         if (!editPropertyDescriptor.isAnyFieldEdited()) {
