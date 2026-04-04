@@ -306,7 +306,7 @@ Examples:
 ### Deleting a client : `deleteClient`
 
 ![deleteClient](images/deleteClient.png)
-Deletes the specified client from the client list.
+Deletes the specified client from the client list and all of the client's properties from the property list.
 
 Format: `deleteClient INDEX`
 
@@ -317,8 +317,8 @@ Format: `deleteClient INDEX`
 
 Examples:
 
-* `list` followed by `deleteClient 2` deletes the 2nd client in the client list.
-* `filterClient n/Betsy` followed by `deleteClient 1` deletes the 1st client in the results of the `filterClient` command.
+* `list` followed by `deleteClient 2` deletes the 2nd client in the client list, as well as the 2nd client's properties.
+* `filterClient n/Betsy` followed by `deleteClient 1` deletes the 1st client in the results of the `filterClient` command, as well as the 1st client's properties.
 
 ### Deleting a property : `deleteProperty`
 
