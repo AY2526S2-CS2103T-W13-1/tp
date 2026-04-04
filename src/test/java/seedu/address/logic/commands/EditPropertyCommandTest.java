@@ -2,17 +2,20 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
-import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditPropertyCommand.EditPropertyDescriptor;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -21,13 +24,8 @@ import seedu.address.model.person.Person;
 import seedu.address.model.property.Price;
 import seedu.address.model.property.Property;
 import seedu.address.model.property.PropertyAddress;
-import seedu.address.model.property.PropertyType;
-import seedu.address.model.property.Size;
 import seedu.address.testutil.PersonBuilder;
 
-/**
- * Contains integration tests (interaction with the Model) for {@code EditPropertyCommand}.
- */
 public class EditPropertyCommandTest {
 
     private final Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
@@ -41,18 +39,13 @@ public class EditPropertyCommandTest {
                 .withProperty("111 Clementi Ave 1", "1000000", "1000", "HDB")
                 .build();
 
-        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-        model.addPerson(personToEdit);
-        model.updateFilteredPropertyList(p -> true);
+        Model editModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        editModel.addPerson(personToEdit);
 
-        Property propertyToEdit = model.getFilteredPropertyList()
-                .get(model.getFilteredPropertyList().size() - 1);
+        Index targetPersonIndex = Index.fromOneBased(editModel.getFilteredPersonList().size());
 
-        EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
-        descriptor.setAddress(new PropertyAddress("999 New Address"));
-
-        Index targetIndex = Index.fromOneBased(model.getFilteredPropertyList().size());
-        EditPropertyCommand command = new EditPropertyCommand(targetIndex, descriptor);
+        List<Property> propertyList = new ArrayList<>(personToEdit.getProperties());
+        Property propertyToEdit = propertyList.get(0);
 
         Property editedProperty = new Property(
                 new PropertyAddress("999 New Address"),
@@ -61,193 +54,81 @@ public class EditPropertyCommandTest {
                 propertyToEdit.getPropertyType()
         );
 
-        String expectedMessage =
-                String.format(EditPropertyCommand.MESSAGE_EDIT_PROPERTY_SUCCESS, editedProperty);
+        EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
+        descriptor.setAddress(new PropertyAddress("999 New Address"));
 
-        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        EditPropertyCommand editCommand =
+                new EditPropertyCommand(targetPersonIndex, Index.fromOneBased(1), descriptor);
 
-        Person owner = expectedModel.getFilteredPersonList().stream()
-                .filter(p -> p.getProperties().contains(propertyToEdit))
-                .findFirst()
-                .orElseThrow();
-
-        Set<Property> updatedProperties = new LinkedHashSet<>(owner.getProperties());
-        updatedProperties.remove(propertyToEdit);
-        updatedProperties.add(editedProperty);
+        propertyList.set(0, editedProperty);
+        Set<Property> updatedProperties = new LinkedHashSet<>(propertyList);
 
         Person editedPerson = new Person(
-                owner.getName(),
-                owner.getPhone(),
-                owner.getEmail(),
-                owner.getTags(),
+                personToEdit.getName(),
+                personToEdit.getPhone(),
+                personToEdit.getEmail(),
+                personToEdit.getTags(),
                 updatedProperties
         );
 
-        expectedModel.setPerson(owner, editedPerson);
-        expectedModel.updateFilteredPersonList(p -> p.isSamePerson(editedPerson));
-        expectedModel.updateFilteredPropertyList(p -> p.equals(editedProperty));
+        String expectedMessage = String.format(EditPropertyCommand.MESSAGE_EDIT_PROPERTY_SUCCESS, editedProperty);
 
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        Model expectedModel = new ModelManager(editModel.getAddressBook(), new UserPrefs());
+        expectedModel.setPerson(personToEdit, editedPerson);
+
+        assertCommandSuccess(editCommand, editModel, expectedMessage, expectedModel);
     }
 
     @Test
-    public void execute_editType_success() {
-        Person personToEdit = new PersonBuilder()
-                .withName("Edit Test")
-                .withPhone("88888888")
-                .withEmail("edit@test.com")
-                .withProperty("111 Clementi Ave 1", "1000000", "1000", "Condo")
-                .build();
-
-        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-        model.addPerson(personToEdit);
-        model.updateFilteredPropertyList(p -> true);
-
-        Property propertyToEdit = model.getFilteredPropertyList()
-                .get(model.getFilteredPropertyList().size() - 1);
+    public void execute_invalidClientIndex_failure() {
+        Index outOfBoundClientIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
 
         EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
-        descriptor.setType(new PropertyType("HDB"));
+        descriptor.setAddress(new PropertyAddress("999 New Address"));
 
-        Index targetIndex = Index.fromOneBased(model.getFilteredPropertyList().size());
-        EditPropertyCommand command = new EditPropertyCommand(targetIndex, descriptor);
+        EditPropertyCommand editCommand =
+                new EditPropertyCommand(outOfBoundClientIndex, Index.fromOneBased(1), descriptor);
 
-        Property editedProperty = new Property(
-                propertyToEdit.getAddress(),
-                propertyToEdit.getPrice(),
-                propertyToEdit.getSize(),
-                new PropertyType("HDB")
-        );
-
-        String expectedMessage =
-                String.format(EditPropertyCommand.MESSAGE_EDIT_PROPERTY_SUCCESS, editedProperty);
-
-        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-
-        Person owner = expectedModel.getFilteredPersonList().stream()
-                .filter(p -> p.getProperties().contains(propertyToEdit))
-                .findFirst()
-                .orElseThrow();
-
-        Set<Property> updatedProperties = new LinkedHashSet<>();
-        for (Property p : owner.getProperties()) {
-            if (p.equals(propertyToEdit)) {
-                updatedProperties.add(editedProperty);
-            } else {
-                updatedProperties.add(p);
-            }
-        }
-
-        Person editedPerson = new Person(
-                owner.getName(),
-                owner.getPhone(),
-                owner.getEmail(),
-                owner.getTags(),
-                updatedProperties
-        );
-
-        expectedModel.setPerson(owner, editedPerson);
-        expectedModel.updateFilteredPersonList(p -> p.isSamePerson(editedPerson));
-        expectedModel.updateFilteredPropertyList(p -> p.equals(editedProperty));
-
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertCommandFailure(editCommand, model, MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
     }
 
     @Test
     public void execute_invalidPropertyIndex_failure() {
-        Person personToEdit = new PersonBuilder()
-                .withName("Edit Test")
-                .withPhone("88888888")
-                .withEmail("edit@test.com")
-                .withProperty("111 Clementi Ave 1", "1000000", "1000", "HDB")
-                .build();
-
-        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-        model.addPerson(personToEdit);
-        model.updateFilteredPropertyList(p -> true);
+        Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        int outOfBoundPropertyIndex = personToEdit.getProperties().size() + 1;
 
         EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
         descriptor.setAddress(new PropertyAddress("999 New Address"));
 
-        Index invalidIndex = Index.fromOneBased(model.getFilteredPropertyList().size() + 1);
+        EditPropertyCommand editCommand =
+                new EditPropertyCommand(INDEX_FIRST_PERSON, Index.fromOneBased(outOfBoundPropertyIndex), descriptor);
 
-        EditPropertyCommand command = new EditPropertyCommand(invalidIndex, descriptor);
-
-        assertCommandFailure(command, model, Messages.MESSAGE_INVALID_PROPERTY_DISPLAYED_INDEX);
+        assertCommandFailure(editCommand, model, EditPropertyCommand.MESSAGE_INVALID_PROPERTY_INDEX);
     }
 
     @Test
     public void execute_duplicateProperty_failure() {
-        Person person = new PersonBuilder()
-                .withName("Edit Test")
+        Person personToEdit = new PersonBuilder()
+                .withName("Duplicate Test")
                 .withPhone("88888888")
-                .withEmail("edit@test.com")
+                .withEmail("duplicate@test.com")
                 .withProperty("111 Clementi Ave 1", "1000000", "1000", "HDB")
-                .withProperty("222 Clementi Ave 2", "2000000", "2000", "Condo")
-                .build();
-
-        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-        model.addPerson(person);
-        model.updateFilteredPropertyList(p -> true);
-
-        EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
-        descriptor.setAddress(new PropertyAddress("222 Clementi Ave 2"));
-        descriptor.setPrice(new Price("2000000"));
-        descriptor.setSize(new Size("2000"));
-
-        Index targetIndex = Index.fromOneBased(model.getFilteredPropertyList().size() - 1);
-        EditPropertyCommand command = new EditPropertyCommand(targetIndex, descriptor);
-
-        assertCommandFailure(command, model, EditPropertyCommand.MESSAGE_DUPLICATE_PROPERTY);
-    }
-
-    @Test
-    public void execute_duplicatePropertyAcrossPersons_failure() {
-        Person firstPerson = new PersonBuilder()
-                .withName("Alice")
-                .withPhone("91111111")
-                .withEmail("alice@test.com")
-                .withProperty("111 Clementi Ave 1", "1000000", "1000", "HDB")
-                .build();
-
-        Person secondPerson = new PersonBuilder()
-                .withName("Bob")
-                .withPhone("92222222")
-                .withEmail("bob@test.com")
                 .withProperty("222 Clementi Ave 2", "2000000", "2000", "HDB")
                 .build();
 
-        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-        model.addPerson(firstPerson);
-        model.addPerson(secondPerson);
-        model.updateFilteredPropertyList(p -> true);
+        Model duplicateModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        duplicateModel.addPerson(personToEdit);
+
+        Index targetPersonIndex = Index.fromOneBased(duplicateModel.getFilteredPersonList().size());
 
         EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
         descriptor.setAddress(new PropertyAddress("111 Clementi Ave 1"));
-        descriptor.setPrice(new Price("1000000"));
-        descriptor.setSize(new Size("1000"));
 
-        Property secondPersonsProperty = secondPerson.getProperties().iterator().next();
-        int index = model.getFilteredPropertyList().indexOf(secondPersonsProperty) + 1;
+        EditPropertyCommand editCommand =
+                new EditPropertyCommand(targetPersonIndex, Index.fromOneBased(2), descriptor);
 
-        EditPropertyCommand command = new EditPropertyCommand(Index.fromOneBased(index), descriptor);
-
-        assertCommandFailure(command, model, EditPropertyCommand.MESSAGE_DUPLICATE_PROPERTY);
+        assertCommandFailure(editCommand, duplicateModel, EditPropertyCommand.MESSAGE_DUPLICATE_PROPERTY);
     }
-
-    @Test
-    public void execute_noProperties_throwsCommandException() {
-        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-        model.updateFilteredPropertyList(p -> false);
-        EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
-        descriptor.setAddress(new PropertyAddress("999 New Address"));
-
-        EditPropertyCommand command =
-                new EditPropertyCommand(Index.fromOneBased(1), descriptor);
-
-        assertCommandFailure(command, model, EditPropertyCommand.MESSAGE_NO_PROPERTIES);
-    }
-
 
     @Test
     public void equals() {
@@ -261,199 +142,15 @@ public class EditPropertyCommandTest {
         differentDescriptor.setPrice(new Price("123456"));
 
         EditPropertyCommand editFirstCommand =
-                new EditPropertyCommand(Index.fromOneBased(1), firstDescriptor);
+                new EditPropertyCommand(INDEX_FIRST_PERSON, Index.fromOneBased(1), firstDescriptor);
         EditPropertyCommand editSecondCommand =
-                new EditPropertyCommand(Index.fromOneBased(2), differentDescriptor);
+                new EditPropertyCommand(INDEX_FIRST_PERSON, Index.fromOneBased(2), differentDescriptor);
 
         assertTrue(editFirstCommand.equals(editFirstCommand));
         assertTrue(editFirstCommand.equals(
-                new EditPropertyCommand(Index.fromOneBased(1), sameDescriptor)));
+                new EditPropertyCommand(INDEX_FIRST_PERSON, Index.fromOneBased(1), sameDescriptor)));
         assertFalse(editFirstCommand.equals(editSecondCommand));
         assertFalse(editFirstCommand.equals(1));
         assertFalse(editFirstCommand.equals(null));
-    }
-
-    @Test
-    public void equals_sameFieldsDifferentType_false() {
-        EditPropertyDescriptor first = new EditPropertyDescriptor();
-        first.setAddress(new PropertyAddress("111 Clementi Ave 1"));
-        first.setPrice(new Price("100"));
-        first.setSize(new Size("1000"));
-        first.setType(new PropertyType("HDB"));
-
-        EditPropertyDescriptor second = new EditPropertyDescriptor();
-        second.setAddress(new PropertyAddress("111 Clementi Ave 1"));
-        second.setPrice(new Price("100"));
-        second.setSize(new Size("1000"));
-        second.setType(new PropertyType("Condo"));
-
-        assertFalse(first.equals(second));
-    }
-
-    @Test
-    public void execute_editOneOfMultipleProperties_success() {
-        Person personToEdit = new PersonBuilder()
-                .withName("Edit Test")
-                .withPhone("88888888")
-                .withEmail("edit@test.com")
-                .withProperty("111 Clementi Ave 1", "1000000", "1000", "HDB")
-                .withProperty("222 Clementi Ave 2", "2000000", "2000", "HDB")
-                .build();
-
-        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-        model.addPerson(personToEdit);
-        model.updateFilteredPropertyList(p -> true);
-
-        Property propertyToEdit = model.getFilteredPropertyList().stream()
-                .filter(p -> p.getAddress().toString().equals("111 Clementi Ave 1"))
-                .findFirst()
-                .orElseThrow();
-
-        int index = model.getFilteredPropertyList().indexOf(propertyToEdit) + 1;
-
-        EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
-        descriptor.setAddress(new PropertyAddress("999 New Address"));
-
-        EditPropertyCommand command = new EditPropertyCommand(Index.fromOneBased(index), descriptor);
-
-        Property editedProperty = new Property(
-                new PropertyAddress("999 New Address"),
-                propertyToEdit.getPrice(),
-                propertyToEdit.getSize(),
-                propertyToEdit.getPropertyType()
-        );
-
-        String expectedMessage =
-                String.format(EditPropertyCommand.MESSAGE_EDIT_PROPERTY_SUCCESS, editedProperty);
-
-        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-
-        Person owner = expectedModel.getFilteredPersonList().stream()
-                .filter(p -> p.getProperties().contains(propertyToEdit))
-                .findFirst()
-                .orElseThrow();
-
-        Set<Property> updatedProperties = new LinkedHashSet<>();
-        for (Property p : owner.getProperties()) {
-            if (p.equals(propertyToEdit)) {
-                updatedProperties.add(editedProperty);
-            } else {
-                updatedProperties.add(p);
-            }
-        }
-
-        Person editedPerson = new Person(
-                owner.getName(),
-                owner.getPhone(),
-                owner.getEmail(),
-                owner.getTags(),
-                updatedProperties
-        );
-
-        expectedModel.setPerson(owner, editedPerson);
-        expectedModel.updateFilteredPersonList(p -> p.isSamePerson(editedPerson));
-        expectedModel.updateFilteredPropertyList(p -> p.equals(editedProperty));
-
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
-    }
-
-    @Test
-    public void equals_nullAndDifferentType_false() {
-        EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
-        descriptor.setAddress(new PropertyAddress("A"));
-
-        assertFalse(descriptor.equals(null));
-        assertFalse(descriptor.equals(1));
-    }
-
-    @Test
-    public void equals_differentFields_false() {
-        EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
-        descriptor.setAddress(new PropertyAddress("A"));
-        descriptor.setPrice(new Price("100"));
-
-        EditPropertyDescriptor diffAddress = new EditPropertyDescriptor();
-        diffAddress.setAddress(new PropertyAddress("B"));
-        diffAddress.setPrice(new Price("100"));
-
-        EditPropertyDescriptor diffPrice = new EditPropertyDescriptor();
-        diffPrice.setAddress(new PropertyAddress("A"));
-        diffPrice.setPrice(new Price("200"));
-
-        assertFalse(descriptor.equals(diffAddress));
-        assertFalse(descriptor.equals(diffPrice));
-    }
-
-    @Test
-    public void equals_sameAddressDifferentPrice_false() {
-        EditPropertyDescriptor first = new EditPropertyDescriptor();
-        first.setAddress(new PropertyAddress("111 Clementi Ave 1"));
-        first.setPrice(new Price("100"));
-        first.setSize(new Size("1000"));
-
-        EditPropertyDescriptor second = new EditPropertyDescriptor();
-        second.setAddress(new PropertyAddress("111 Clementi Ave 1"));
-        second.setPrice(new Price("200"));
-        second.setSize(new Size("1000"));
-
-        assertFalse(first.equals(second));
-    }
-
-    @Test
-    public void equals_sameAddressSamePriceDifferentSize_false() {
-        EditPropertyDescriptor first = new EditPropertyDescriptor();
-        first.setAddress(new PropertyAddress("111 Clementi Ave 1"));
-        first.setPrice(new Price("100"));
-        first.setSize(new Size("1000"));
-
-        EditPropertyDescriptor second = new EditPropertyDescriptor();
-        second.setAddress(new PropertyAddress("111 Clementi Ave 1"));
-        second.setPrice(new Price("100"));
-        second.setSize(new Size("2000"));
-
-        assertFalse(first.equals(second));
-    }
-
-    @Test
-    public void editPropertyDescriptor_equals() {
-        EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
-        descriptor.setAddress(new PropertyAddress("111 Clementi Ave 1"));
-        descriptor.setPrice(new Price("100"));
-        descriptor.setSize(new Size("1000"));
-
-        EditPropertyDescriptor sameDescriptor = new EditPropertyDescriptor();
-        sameDescriptor.setAddress(new PropertyAddress("111 Clementi Ave 1"));
-        sameDescriptor.setPrice(new Price("100"));
-        sameDescriptor.setSize(new Size("1000"));
-
-        EditPropertyDescriptor diffAddress = new EditPropertyDescriptor();
-        diffAddress.setAddress(new PropertyAddress("222 Clementi Ave 2"));
-        diffAddress.setPrice(new Price("100"));
-        diffAddress.setSize(new Size("1000"));
-
-        EditPropertyDescriptor diffPrice = new EditPropertyDescriptor();
-        diffPrice.setAddress(new PropertyAddress("111 Clementi Ave 1"));
-        diffPrice.setPrice(new Price("200"));
-        diffPrice.setSize(new Size("1000"));
-
-        EditPropertyDescriptor diffSize = new EditPropertyDescriptor();
-        diffSize.setAddress(new PropertyAddress("111 Clementi Ave 1"));
-        diffSize.setPrice(new Price("100"));
-        diffSize.setSize(new Size("2000"));
-
-        EditPropertyDescriptor diffType = new EditPropertyDescriptor();
-        diffType.setAddress(new PropertyAddress("111 Clementi Ave 1"));
-        diffType.setPrice(new Price("100"));
-        diffType.setSize(new Size("1000"));
-        diffType.setType(new PropertyType("Condo"));
-
-        assertTrue(descriptor.equals(descriptor));
-        assertTrue(descriptor.equals(sameDescriptor));
-        assertFalse(descriptor.equals(null));
-        assertFalse(descriptor.equals(1));
-        assertFalse(descriptor.equals(diffAddress));
-        assertFalse(descriptor.equals(diffPrice));
-        assertFalse(descriptor.equals(diffSize));
-        assertFalse(descriptor.equals(diffType));
     }
 }

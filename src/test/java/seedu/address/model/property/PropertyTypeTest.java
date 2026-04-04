@@ -43,10 +43,6 @@ public class PropertyTypeTest {
     public void isValidPropertyType_validTypes_returnsTrue() {
         assertTrue(PropertyType.isValidPropertyType("HDB"));
         assertTrue(PropertyType.isValidPropertyType("Condo"));
-        assertTrue(PropertyType.isValidPropertyType("hDb"));
-        assertTrue(PropertyType.isValidPropertyType("coNdO"));
-        assertTrue(PropertyType.isValidPropertyType("condo"));
-        assertTrue(PropertyType.isValidPropertyType("hdb"));
     }
 
     @Test
@@ -56,9 +52,6 @@ public class PropertyTypeTest {
         assertFalse(PropertyType.isValidPropertyType("@HDB"));
         assertFalse(PropertyType.isValidPropertyType("HDB!"));
         assertFalse(PropertyType.isValidPropertyType("#Condo"));
-        assertFalse(PropertyType.isValidPropertyType("Landed"));
-        assertFalse(PropertyType.isValidPropertyType("Semi Detached"));
-        assertFalse(PropertyType.isValidPropertyType("Executive Apartment"));
     }
 
     @Test

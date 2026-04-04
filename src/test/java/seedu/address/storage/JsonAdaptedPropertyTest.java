@@ -27,11 +27,12 @@ public class JsonAdaptedPropertyTest {
     @Test
     public void toModelType_validPropertyDetails_returnsProperty() throws Exception {
         JsonAdaptedProperty property = new JsonAdaptedProperty(
-                VALID_ADDRESS, VALID_PRICE, VALID_SIZE, null, null);
+                VALID_ADDRESS, VALID_PRICE, VALID_SIZE, null, VALID_TYPE);
         Property expectedProperty = new Property(
                 new PropertyAddress(VALID_ADDRESS),
                 new Price(VALID_PRICE),
-                new Size(VALID_SIZE));
+                new Size(VALID_SIZE),
+                new PropertyType(VALID_TYPE));
 
         assertEquals(expectedProperty, property.toModelType());
     }
@@ -179,7 +180,8 @@ public class JsonAdaptedPropertyTest {
         Property source = new Property(
                 new PropertyAddress(VALID_ADDRESS),
                 new Price(VALID_PRICE),
-                new Size(VALID_SIZE));
+                new Size(VALID_SIZE),
+                new PropertyType(VALID_TYPE));
 
         JsonAdaptedProperty adapted = new JsonAdaptedProperty(source);
         Property result = adapted.toModelType();
@@ -187,7 +189,7 @@ public class JsonAdaptedPropertyTest {
         assertEquals(new PropertyAddress(VALID_ADDRESS), result.getAddress());
         assertEquals(new Price(VALID_PRICE), result.getPrice());
         assertEquals(new Size(VALID_SIZE), result.getSize());
-        assertNull(result.getPropertyType());
+        assertEquals(new PropertyType(VALID_TYPE), result.getPropertyType());
         assertNull(result.getRemarks());
     }
 }

@@ -1,11 +1,9 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_PRICE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_SIZE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TYPE;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +12,6 @@ import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.CollectionUtil;
-import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
@@ -30,104 +27,78 @@ import seedu.address.model.property.Size;
 public class EditPropertyCommand extends Command {
     public static final String COMMAND_WORD = "editProperty";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the property identified "
-            + "by the index number used in the displayed property list.\n"
-            + "Parameters: INDEX (must be a positive integer) "
-            + "[" + PREFIX_ADDRESS + "ADDRESS] "
-            + "[" + PREFIX_PRICE + "PRICE] "
-            + "[" + PREFIX_SIZE + "SIZE] "
-            + "[" + PREFIX_TYPE + "TYPE]\n"
-            + "Example: " + COMMAND_WORD + " 1 "
-            + PREFIX_ADDRESS + "123 Clementi Road "
-            + PREFIX_PRICE + "500000 "
-            + PREFIX_SIZE + "1200 "
-            + PREFIX_TYPE + "HDB";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the property identified by the property index "
+            + "for the client identified by the client index.\n"
+            + "Parameters: CLIENT_INDEX (must be a positive integer) "
+            + "i/PROPERTY_INDEX (must be a positive integer) "
+            + "[a/ADDRESS] [pr/PRICE] [s/SIZE]\n"
+            + "Example: " + COMMAND_WORD + " 1 i/1 a/123 Clementi Road pr/500000 s/1200";
 
     public static final String MESSAGE_EDIT_PROPERTY_SUCCESS = "Edited Property: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
+    public static final String MESSAGE_INVALID_PROPERTY_INDEX =
+            "The property index provided for this client is invalid.";
     public static final String MESSAGE_DUPLICATE_PROPERTY =
-            "Another property with the same address already exists.";
-    public static final String MESSAGE_PROPERTY_OWNER_NOT_FOUND =
-            "Property owner not found.";
-    public static final String MESSAGE_NO_PROPERTIES =
-            "No properties found. Please add a property first.";
+            "This client already has another property with the same address.";
 
-    private final Index index;
+    private final Index clientIndex;
+    private final Index propertyIndex;
     private final EditPropertyDescriptor editPropertyDescriptor;
 
     /**
-     * @param index                  of the property to edit
+     * @param clientIndex of the client in the filtered person list to edit
+     * @param propertyIndex of the property belonging to the client to edit
      * @param editPropertyDescriptor details to edit the property with
      */
-    public EditPropertyCommand(Index index, EditPropertyDescriptor editPropertyDescriptor) {
-        requireNonNull(index);
+    public EditPropertyCommand(Index clientIndex, Index propertyIndex,
+                               EditPropertyDescriptor editPropertyDescriptor) {
+        requireNonNull(clientIndex);
+        requireNonNull(propertyIndex);
         requireNonNull(editPropertyDescriptor);
 
-        this.index = index;
+        this.clientIndex = clientIndex;
+        this.propertyIndex = propertyIndex;
         this.editPropertyDescriptor = new EditPropertyDescriptor(editPropertyDescriptor);
     }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        List<Person> lastShownList = model.getFilteredPersonList();
 
-        List<Property> lastShownPropertyList = model.getFilteredPropertyList();
-
-        if (lastShownPropertyList.isEmpty()) {
-            throw new CommandException(MESSAGE_NO_PROPERTIES);
+        if (clientIndex.getZeroBased() >= lastShownList.size()) {
+            throw new CommandException(MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
-        if (index.getZeroBased() >= lastShownPropertyList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PROPERTY_DISPLAYED_INDEX);
+        Person personToEdit = lastShownList.get(clientIndex.getZeroBased());
+        List<Property> propertyList = new ArrayList<>(personToEdit.getProperties());
+
+        if (propertyIndex.getZeroBased() >= propertyList.size()) {
+            throw new CommandException(MESSAGE_INVALID_PROPERTY_INDEX);
         }
 
-        Property propertyToEdit = lastShownPropertyList.get(index.getZeroBased());
+        Property propertyToEdit = propertyList.get(propertyIndex.getZeroBased());
         Property editedProperty = createEditedProperty(propertyToEdit, editPropertyDescriptor);
 
-        for (Person person : model.getAddressBook().getPersonList()) {
-            for (Property p : person.getProperties()) {
-                if (!p.equals(propertyToEdit) && p.isSameProperty(editedProperty)) {
-                    throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
-                }
+        for (int i = 0; i < propertyList.size(); i++) {
+            if (i != propertyIndex.getZeroBased()
+                    && propertyList.get(i).isSameProperty(editedProperty)) {
+                throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
             }
         }
 
-        Person owner = null;
-        for (Person person : model.getFilteredPersonList()) {
-            if (person.getProperties().contains(propertyToEdit)) {
-                owner = person;
-                break;
-            }
-        }
-
-        if (owner == null) {
-            throw new CommandException(MESSAGE_PROPERTY_OWNER_NOT_FOUND);
-        }
-
-        //@Liu Zhiyuan use chatgpt to help with writing next 8 lines
-        //to ensure the order of property will not be changed.
-        Set<Property> updatedProperties = new LinkedHashSet<>();
-        for (Property p : owner.getProperties()) {
-            if (p.equals(propertyToEdit)) {
-                updatedProperties.add(editedProperty);
-            } else {
-                updatedProperties.add(p);
-            }
-        }
+        propertyList.set(propertyIndex.getZeroBased(), editedProperty);
+        Set<Property> updatedProperties = new LinkedHashSet<>(propertyList);
 
         Person editedPerson = new Person(
-                owner.getName(),
-                owner.getPhone(),
-                owner.getEmail(),
-                owner.getTags(),
+                personToEdit.getName(),
+                personToEdit.getPhone(),
+                personToEdit.getEmail(),
+                personToEdit.getTags(),
                 updatedProperties
         );
 
-        model.setPerson(owner, editedPerson);
-
-        model.updateFilteredPropertyList(p -> p.equals(editedProperty));
-        model.updateFilteredPersonList(p -> p.isSamePerson(editedPerson));
-
+        model.setPerson(personToEdit, editedPerson);
         return new CommandResult(String.format(MESSAGE_EDIT_PROPERTY_SUCCESS, editedProperty));
     }
 
@@ -142,7 +113,8 @@ public class EditPropertyCommand extends Command {
         PropertyAddress updatedAddress = editPropertyDescriptor.getAddress().orElse(propertyToEdit.getAddress());
         Price updatedPrice = editPropertyDescriptor.getPrice().orElse(propertyToEdit.getPrice());
         Size updatedSize = editPropertyDescriptor.getSize().orElse(propertyToEdit.getSize());
-        PropertyType updatedType = editPropertyDescriptor.getType().orElse(propertyToEdit.getPropertyType());
+        PropertyType updatedType = editPropertyDescriptor.getPropertyType().orElse(propertyToEdit.getPropertyType());
+
         return new Property(updatedAddress, updatedPrice, updatedSize, updatedType);
     }
 
@@ -157,7 +129,8 @@ public class EditPropertyCommand extends Command {
         }
 
         EditPropertyCommand otherEditPropertyCommand = (EditPropertyCommand) other;
-        return index.equals(otherEditPropertyCommand.index)
+        return clientIndex.equals(otherEditPropertyCommand.clientIndex)
+                && propertyIndex.equals(otherEditPropertyCommand.propertyIndex)
                 && editPropertyDescriptor.equals(otherEditPropertyCommand.editPropertyDescriptor);
     }
 
@@ -169,10 +142,8 @@ public class EditPropertyCommand extends Command {
         private PropertyAddress address;
         private Price price;
         private Size size;
-        private PropertyType type;
-
-        public EditPropertyDescriptor() {
-        }
+        private PropertyType propertyType;
+        public EditPropertyDescriptor() {}
 
         /**
          * Copy constructor.
@@ -181,14 +152,14 @@ public class EditPropertyCommand extends Command {
             setAddress(toCopy.address);
             setPrice(toCopy.price);
             setSize(toCopy.size);
-            setType(toCopy.type);
+            setPropertyType(toCopy.propertyType);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(address, price, size, type);
+            return CollectionUtil.isAnyNonNull(address, price, size, propertyType);
         }
 
         public void setAddress(PropertyAddress address) {
@@ -197,10 +168,6 @@ public class EditPropertyCommand extends Command {
 
         public Optional<PropertyAddress> getAddress() {
             return Optional.ofNullable(address);
-        }
-
-        public void setType(PropertyType type) {
-            this.type = type;
         }
 
         public void setPrice(Price price) {
@@ -219,8 +186,12 @@ public class EditPropertyCommand extends Command {
             return Optional.ofNullable(size);
         }
 
-        public Optional<PropertyType> getType() {
-            return Optional.ofNullable(type);
+        public void setPropertyType(PropertyType propertyType) {
+            this.propertyType = propertyType;
+        }
+
+        public Optional<PropertyType> getPropertyType() {
+            return Optional.ofNullable(propertyType);
         }
 
         @Override
@@ -237,7 +208,7 @@ public class EditPropertyCommand extends Command {
             return Objects.equals(address, otherDescriptor.address)
                     && Objects.equals(price, otherDescriptor.price)
                     && Objects.equals(size, otherDescriptor.size)
-                    && Objects.equals(type, otherDescriptor.type);
+                    && Objects.equals(propertyType, otherDescriptor.propertyType);
         }
     }
 }

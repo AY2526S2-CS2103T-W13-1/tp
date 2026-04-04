@@ -4,14 +4,11 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a Property's type in the address book.
- * Examples include HDB and Condo only.
+ * Examples include HDB, Condo, Landed, etc.
  */
 public class PropertyType {
 
-    public static final String MESSAGE_CONSTRAINTS =
-            "Property type should be either HDB or Condo, and it should not be blank.";
-
-    public static final String VALIDATION_REGEX = "(?i)^(HDB|condo)$";
+    public static final String MESSAGE_CONSTRAINTS = "Property type must be either 'HDB' or 'Condo'.";
 
     public final String value;
 
@@ -25,19 +22,7 @@ public class PropertyType {
         if (!isValidPropertyType(propertyType)) {
             throw new IllegalArgumentException(MESSAGE_CONSTRAINTS);
         }
-        this.value = normalizePropertyType(propertyType);
-    }
-    /**
-    * Sets the tag to either Condo or Property, non-case sensitive
-    *
-    * @param input A valid property type string.
-    */
-    public static String normalizePropertyType(String input) {
-        if (input.equalsIgnoreCase("hdb")) {
-            return "HDB";
-        } else {
-            return "Condo";
-        }
+        this.value = propertyType.equalsIgnoreCase("HDB") ? "HDB" : "Condo";
     }
 
     /**
@@ -46,7 +31,7 @@ public class PropertyType {
      * @param test The string to validate.
      */
     public static boolean isValidPropertyType(String test) {
-        return test.matches(VALIDATION_REGEX);
+        return test.equalsIgnoreCase("HDB") || test.equalsIgnoreCase("Condo");
     }
 
     @Override

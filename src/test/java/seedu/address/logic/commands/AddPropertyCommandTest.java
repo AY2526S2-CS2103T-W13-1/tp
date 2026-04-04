@@ -3,12 +3,10 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.logic.commands.AddPropertyCommand.MESSAGE_INVALID_PERSON_INDEX;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
-import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import org.junit.jupiter.api.Test;
@@ -22,24 +20,17 @@ import seedu.address.model.person.Person;
 import seedu.address.model.property.Price;
 import seedu.address.model.property.Property;
 import seedu.address.model.property.PropertyAddress;
+import seedu.address.model.property.PropertyType;
 import seedu.address.model.property.Size;
 
-/**
- * Contains integration tests (interaction with the Model) for {@code AddPropertyCommand}.
- */
 public class AddPropertyCommandTest {
     private Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
     private Property validProperty = new Property(
             new PropertyAddress("311 Clementi Ave 2, #02-25"),
             new Price("1200000"),
-            new Size("1200")
-    );
-
-    private final Property anotherValidProperty = new Property(
-            new PropertyAddress("123 Clementi Ave 3"),
-            new Price("1000000"),
-            new Size("1200")
+            new Size("1200"),
+            new PropertyType("HDB")
     );
 
     @Test
@@ -77,7 +68,7 @@ public class AddPropertyCommandTest {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
         AddPropertyCommand addCommand = new AddPropertyCommand(outOfBoundIndex, validProperty);
 
-        assertCommandFailure(addCommand, model, MESSAGE_INVALID_PERSON_INDEX);
+        assertCommandFailure(addCommand, model, "The person index provided is invalid.");
     }
 
     @Test
@@ -91,25 +82,53 @@ public class AddPropertyCommandTest {
     }
 
     @Test
-    public void execute_propertyAlreadyOwnedByAnotherClient_throwsCommandException() {
-        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person updatedFirstPerson = firstPerson.addProperty(anotherValidProperty);
-        model.setPerson(firstPerson, updatedFirstPerson);
+    public void execute_duplicateAddressDifferentType_throwsCommandException() throws CommandException {
+        AddPropertyCommand addCommand = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
+        addCommand.execute(model);
 
-        AddPropertyCommand command = new AddPropertyCommand(INDEX_SECOND_PERSON, anotherValidProperty);
-
-        assertCommandFailure(command, model, AddPropertyCommand.MESSAGE_PROPERTY_ALREADY_OWNED);
+        Property sameAddressDifferentType = new Property(
+                new PropertyAddress("311 Clementi Ave 2, #02-25"),
+                new Price("1200000"),
+                new Size("1200"),
+                new PropertyType("Condo") // same address, different type
+        );
+        AddPropertyCommand duplicateCommand = new AddPropertyCommand(INDEX_FIRST_PERSON, sameAddressDifferentType);
+        assertCommandFailure(duplicateCommand, model, AddPropertyCommand.MESSAGE_DUPLICATE_PROPERTY);
     }
 
     @Test
-    public void execute_duplicatePropertySameClient_failure() {
-        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person updatedFirstPerson = firstPerson.addProperty(anotherValidProperty);
-        model.setPerson(firstPerson, updatedFirstPerson);
+    public void execute_samePropertyToDifferentPersons_success() throws CommandException {
+        Model testModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
-        AddPropertyCommand command = new AddPropertyCommand(INDEX_FIRST_PERSON, anotherValidProperty);
+        AddPropertyCommand addCommand1 = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
+        AddPropertyCommand addCommand2 = new AddPropertyCommand(
+                Index.fromOneBased(2), validProperty);
 
-        assertCommandFailure(command, model, AddPropertyCommand.MESSAGE_DUPLICATE_PROPERTY);
+        Person personToEdit1 = testModel.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person editedPerson1 = personToEdit1.addProperty(validProperty);
+
+        String expectedMessage1 = String.format(
+                AddPropertyCommand.MESSAGE_SUCCESS,
+                personToEdit1.getName(),
+                validProperty
+        );
+
+        Model expectedModel1 = new ModelManager(testModel.getAddressBook(), new UserPrefs());
+        expectedModel1.setPerson(personToEdit1, editedPerson1);
+
+        assertCommandSuccess(addCommand1, testModel, expectedMessage1, expectedModel1);
+
+        // Now execute the second command on the updated model
+        Person personToEdit2 = testModel.getFilteredPersonList().get(1);
+
+        String expectedMessage2 = String.format(
+                AddPropertyCommand.MESSAGE_SUCCESS,
+                personToEdit2.getName(),
+                validProperty
+        );
+
+        CommandResult result = addCommand2.execute(testModel);
+        assertEquals(expectedMessage2, result.getFeedbackToUser());
     }
 
     @Test
@@ -125,7 +144,8 @@ public class AddPropertyCommandTest {
     public void equals() {
         AddPropertyCommand firstCommand = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
         AddPropertyCommand secondCommand = new AddPropertyCommand(INDEX_FIRST_PERSON,
-                new Property(new PropertyAddress("123 Street"), new Price("500000"), new Size("1000")));
+                new Property(new PropertyAddress("123 Street"), new Price("500000"), new Size("1000"),
+                new PropertyType("Condo")));
 
         AddPropertyCommand firstCommandCopy = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
 
@@ -134,7 +154,6 @@ public class AddPropertyCommandTest {
         assertFalse(firstCommand.equals(null));
         assertFalse(firstCommand.equals(1));
         assertFalse(firstCommand.equals(secondCommand));
-        assertFalse(firstCommand.equals(new AddPropertyCommand(INDEX_SECOND_PERSON, validProperty)));
     }
 
     @Test
