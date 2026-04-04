@@ -25,6 +25,10 @@ public class RemarkPropertyCommandParser implements Parser<RemarkPropertyCommand
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, RemarkPropertyCommand.MESSAGE_USAGE), pe);
         }
 
+        if (argMultimap.getAllValues(PREFIX_REMARK).size() > 1) {
+            throw new ParseException("Only one remark is allowed. Please provide a single r/ prefix.");
+        }
+
         String remark = argMultimap.getValue(PREFIX_REMARK).orElse("");
 
         return new RemarkPropertyCommand(propertyIndex, remark);
