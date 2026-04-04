@@ -52,6 +52,8 @@
         "common-classes": "Common classes",
         "implementation": "Implementation",
         "add-property-feature": "Add Property feature",
+        "edit-client-feature": "Edit Client feature",
+        "edit-property-feature": "Edit Property feature",
         "delete-property-feature": "Delete Property feature",
         "filter-property-feature": "Filter Property feature",
         "proposed-undo-redo-feature": "[Proposed] Undo/redo feature",
