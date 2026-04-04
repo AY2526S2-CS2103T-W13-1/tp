@@ -17,17 +17,6 @@ public class Property {
     private String remarks;
 
     /**
-     * Constructs a {@code Property} without a property type.
-     *
-     * @param address A valid property address.
-     * @param price A valid property price.
-     * @param size A valid property size.
-     */
-    public Property(PropertyAddress address, Price price, Size size) {
-        this(address, price, size, null);
-    }
-
-    /**
      * Constructs a {@code Property} with a property type.
      *
      * @param address A valid property address.

@@ -18,6 +18,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.property.Price;
 import seedu.address.model.property.Property;
 import seedu.address.model.property.PropertyAddress;
+import seedu.address.model.property.PropertyType;
 import seedu.address.model.property.Size;
 
 /**
@@ -112,8 +113,9 @@ public class EditPropertyCommand extends Command {
         PropertyAddress updatedAddress = editPropertyDescriptor.getAddress().orElse(propertyToEdit.getAddress());
         Price updatedPrice = editPropertyDescriptor.getPrice().orElse(propertyToEdit.getPrice());
         Size updatedSize = editPropertyDescriptor.getSize().orElse(propertyToEdit.getSize());
+        PropertyType updatedType = editPropertyDescriptor.getPropertyType().orElse(propertyToEdit.getPropertyType());
 
-        return new Property(updatedAddress, updatedPrice, updatedSize);
+        return new Property(updatedAddress, updatedPrice, updatedSize, updatedType);
     }
 
     @Override
@@ -140,7 +142,7 @@ public class EditPropertyCommand extends Command {
         private PropertyAddress address;
         private Price price;
         private Size size;
-
+        private PropertyType propertyType;
         public EditPropertyDescriptor() {}
 
         /**
@@ -150,13 +152,14 @@ public class EditPropertyCommand extends Command {
             setAddress(toCopy.address);
             setPrice(toCopy.price);
             setSize(toCopy.size);
+            setPropertyType(toCopy.propertyType);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(address, price, size);
+            return CollectionUtil.isAnyNonNull(address, price, size, propertyType);
         }
 
         public void setAddress(PropertyAddress address) {
@@ -183,6 +186,14 @@ public class EditPropertyCommand extends Command {
             return Optional.ofNullable(size);
         }
 
+        public void setPropertyType(PropertyType propertyType) {
+            this.propertyType = propertyType;
+        }
+
+        public Optional<PropertyType> getPropertyType() {
+            return Optional.ofNullable(propertyType);
+        }
+
         @Override
         public boolean equals(Object other) {
             if (other == this) {
@@ -196,7 +207,8 @@ public class EditPropertyCommand extends Command {
             EditPropertyDescriptor otherDescriptor = (EditPropertyDescriptor) other;
             return Objects.equals(address, otherDescriptor.address)
                     && Objects.equals(price, otherDescriptor.price)
-                    && Objects.equals(size, otherDescriptor.size);
+                    && Objects.equals(size, otherDescriptor.size)
+                    && Objects.equals(propertyType, otherDescriptor.propertyType);
         }
     }
 }

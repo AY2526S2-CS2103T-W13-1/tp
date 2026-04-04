@@ -20,6 +20,7 @@ import seedu.address.model.person.Phone;
 import seedu.address.model.property.Price;
 import seedu.address.model.property.Property;
 import seedu.address.model.property.PropertyAddress;
+import seedu.address.model.property.PropertyType;
 import seedu.address.model.property.Size;
 import seedu.address.model.tag.Tag;
 
@@ -35,7 +36,8 @@ public class ViewPropertyCommandTest {
         Property property = new Property(
                 new PropertyAddress("123 Clementi Ave 3"),
                 new Price("1000000"),
-                new Size("121")
+                new Size("121"),
+                new PropertyType("HDB")
         );
         properties.add(property);
 

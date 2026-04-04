@@ -8,10 +8,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class PropertyType {
 
-    public static final String MESSAGE_CONSTRAINTS =
-            "Property type should only contain alphanumeric characters and spaces, and it should not be blank.";
-
-    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} ]*";
+    public static final String MESSAGE_CONSTRAINTS = "Property type must be either 'HDB' or 'Condo'.";
 
     public final String value;
 
@@ -25,7 +22,7 @@ public class PropertyType {
         if (!isValidPropertyType(propertyType)) {
             throw new IllegalArgumentException(MESSAGE_CONSTRAINTS);
         }
-        this.value = propertyType;
+        this.value = propertyType.equalsIgnoreCase("HDB") ? "HDB" : "Condo";
     }
 
     /**
@@ -34,7 +31,7 @@ public class PropertyType {
      * @param test The string to validate.
      */
     public static boolean isValidPropertyType(String test) {
-        return test.matches(VALIDATION_REGEX);
+        return test.equalsIgnoreCase("HDB") || test.equalsIgnoreCase("Condo");
     }
 
     @Override

@@ -36,7 +36,7 @@ public class EditPropertyCommandTest {
                 .withName("Edit Test")
                 .withPhone("88888888")
                 .withEmail("edit@test.com")
-                .withProperty("111 Clementi Ave 1", "1000000", "1000")
+                .withProperty("111 Clementi Ave 1", "1000000", "1000", "HDB")
                 .build();
 
         Model editModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
@@ -50,7 +50,8 @@ public class EditPropertyCommandTest {
         Property editedProperty = new Property(
                 new PropertyAddress("999 New Address"),
                 propertyToEdit.getPrice(),
-                propertyToEdit.getSize()
+                propertyToEdit.getSize(),
+                propertyToEdit.getPropertyType()
         );
 
         EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
@@ -111,8 +112,8 @@ public class EditPropertyCommandTest {
                 .withName("Duplicate Test")
                 .withPhone("88888888")
                 .withEmail("duplicate@test.com")
-                .withProperty("111 Clementi Ave 1", "1000000", "1000")
-                .withProperty("222 Clementi Ave 2", "2000000", "2000")
+                .withProperty("111 Clementi Ave 1", "1000000", "1000", "HDB")
+                .withProperty("222 Clementi Ave 2", "2000000", "2000", "HDB")
                 .build();
 
         Model duplicateModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());

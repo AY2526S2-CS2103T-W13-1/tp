@@ -24,6 +24,7 @@ public class AddPropertyCommandParserTest {
     private static final String VALID_ADDRESS = "311 Clementi Ave 2, #02-25";
     private static final String VALID_PRICE = "1200000";
     private static final String VALID_SIZE = "1200";
+    private static final String VALID_TYPE = "HDB";
 
     private static final String INVALID_ADDRESS = "@123";
     private static final String INVALID_PRICE = "abc";
@@ -37,12 +38,14 @@ public class AddPropertyCommandParserTest {
                 + PREFIX_LISTING_INDEX + "1 "
                 + PREFIX_ADDRESS + VALID_ADDRESS + " "
                 + PREFIX_PRICE + VALID_PRICE + " "
-                + PREFIX_SIZE + VALID_SIZE;
+                + PREFIX_SIZE + VALID_SIZE + " "
+                + PREFIX_TYPE + VALID_TYPE;
 
         Property property = new Property(
                 new PropertyAddress(VALID_ADDRESS),
                 new Price(VALID_PRICE),
-                new Size(VALID_SIZE));
+                new Size(VALID_SIZE),
+                new PropertyType(VALID_TYPE));
         AddPropertyCommand expectedCommand = new AddPropertyCommand(Index.fromOneBased(1), property);
 
         assertParseSuccess(parser, userInput, expectedCommand);

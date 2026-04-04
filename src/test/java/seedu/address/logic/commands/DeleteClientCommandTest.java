@@ -22,6 +22,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.property.Price;
 import seedu.address.model.property.Property;
 import seedu.address.model.property.PropertyAddress;
+import seedu.address.model.property.PropertyType;
 import seedu.address.model.property.Size;
 
 /**
@@ -58,7 +59,7 @@ public class DeleteClientCommandTest {
     public void execute_unfilteredListHasProperties_success() throws CommandException {
         AddPropertyCommand addPropertyCommand = new AddPropertyCommand(INDEX_FIRST_PERSON,
                 new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"), new Price("1200000"),
-                new Size("1200")));
+                new Size("1200"), new PropertyType("HDB")));
         addPropertyCommand.execute(model);
 
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
@@ -109,7 +110,7 @@ public class DeleteClientCommandTest {
 
         AddPropertyCommand addPropertyCommand = new AddPropertyCommand(INDEX_FIRST_PERSON,
                 new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"), new Price("1200000"),
-                new Size("1200")));
+                new Size("1200"), new PropertyType("HDB")));
         addPropertyCommand.execute(model);
 
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());

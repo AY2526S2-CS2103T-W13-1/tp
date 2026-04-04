@@ -22,6 +22,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.property.Price;
 import seedu.address.model.property.Property;
 import seedu.address.model.property.PropertyAddress;
+import seedu.address.model.property.PropertyType;
 import seedu.address.model.property.Size;
 
 /**
@@ -37,7 +38,7 @@ public class DeletePropertyCommandTest {
         // Add property to the first person
         AddPropertyCommand addPropertyCommand = new AddPropertyCommand(INDEX_FIRST_PERSON,
                 new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"), new Price("1200000"),
-                new Size("1200")));
+                new Size("1200"), new PropertyType("HDB")));
         addPropertyCommand.execute(model);
 
         Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
@@ -76,7 +77,7 @@ public class DeletePropertyCommandTest {
         // Add property to the first person
         AddPropertyCommand addPropertyCommand = new AddPropertyCommand(INDEX_FIRST_PERSON,
                 new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"), new Price("1200000"),
-                new Size("1200")));
+                new Size("1200"), new PropertyType("HDB")));
         addPropertyCommand.execute(model);
 
         Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());

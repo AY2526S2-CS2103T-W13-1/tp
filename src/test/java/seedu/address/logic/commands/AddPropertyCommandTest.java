@@ -20,6 +20,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.property.Price;
 import seedu.address.model.property.Property;
 import seedu.address.model.property.PropertyAddress;
+import seedu.address.model.property.PropertyType;
 import seedu.address.model.property.Size;
 
 public class AddPropertyCommandTest {
@@ -28,7 +29,8 @@ public class AddPropertyCommandTest {
     private Property validProperty = new Property(
             new PropertyAddress("311 Clementi Ave 2, #02-25"),
             new Price("1200000"),
-            new Size("1200")
+            new Size("1200"),
+            new PropertyType("HDB")
     );
 
     @Test
@@ -80,6 +82,21 @@ public class AddPropertyCommandTest {
     }
 
     @Test
+    public void execute_duplicateAddressDifferentType_throwsCommandException() throws CommandException {
+        AddPropertyCommand addCommand = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
+        addCommand.execute(model);
+
+        Property sameAddressDifferentType = new Property(
+                new PropertyAddress("311 Clementi Ave 2, #02-25"),
+                new Price("1200000"),
+                new Size("1200"),
+                new PropertyType("Condo") // same address, different type
+        );
+        AddPropertyCommand duplicateCommand = new AddPropertyCommand(INDEX_FIRST_PERSON, sameAddressDifferentType);
+        assertCommandFailure(duplicateCommand, model, AddPropertyCommand.MESSAGE_DUPLICATE_PROPERTY);
+    }
+
+    @Test
     public void execute_samePropertyToDifferentPersons_success() throws CommandException {
         Model testModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
@@ -127,7 +144,8 @@ public class AddPropertyCommandTest {
     public void equals() {
         AddPropertyCommand firstCommand = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
         AddPropertyCommand secondCommand = new AddPropertyCommand(INDEX_FIRST_PERSON,
-                new Property(new PropertyAddress("123 Street"), new Price("500000"), new Size("1000")));
+                new Property(new PropertyAddress("123 Street"), new Price("500000"), new Size("1000"),
+                new PropertyType("Condo")));
 
         AddPropertyCommand firstCommandCopy = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
 

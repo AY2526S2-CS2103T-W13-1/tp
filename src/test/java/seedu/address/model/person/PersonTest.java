@@ -119,14 +119,6 @@ public class PersonTest {
         Person personWithNoProperties = new PersonBuilder(ALICE).withProperties(Set.of()).build();
         assertFalse(personWithNoProperties.hasHdbProperty());
 
-        // Person with property without type -> returns false
-        Property propertyWithoutType = new Property(
-                new PropertyAddress("789 No Type Road"),
-                new Price("600000"),
-                new Size("1200")
-        );
-        Person personWithUntypedProperty = new PersonBuilder(ALICE).withProperties(Set.of(propertyWithoutType)).build();
-        assertFalse(personWithUntypedProperty.hasHdbProperty());
     }
 
     @Test

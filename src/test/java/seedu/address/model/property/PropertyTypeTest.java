@@ -20,12 +20,6 @@ public class PropertyTypeTest {
     }
 
     @Test
-    public void constructor_validPropertyTypeWithSpaces_success() {
-        PropertyType propertyType = new PropertyType("Semi Detached");
-        assertEquals("Semi Detached", propertyType.value);
-    }
-
-    @Test
     public void constructor_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new PropertyType(null));
     }
@@ -49,9 +43,6 @@ public class PropertyTypeTest {
     public void isValidPropertyType_validTypes_returnsTrue() {
         assertTrue(PropertyType.isValidPropertyType("HDB"));
         assertTrue(PropertyType.isValidPropertyType("Condo"));
-        assertTrue(PropertyType.isValidPropertyType("Landed"));
-        assertTrue(PropertyType.isValidPropertyType("Semi Detached"));
-        assertTrue(PropertyType.isValidPropertyType("Executive Apartment"));
     }
 
     @Test
