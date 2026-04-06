@@ -143,7 +143,7 @@ public class FilterPropertyCommandTest {
     private void addPropertyToModel(Model model, Index index, String address, String price, String size)
             throws Exception {
         Property property = new Property(new PropertyAddress(address), new Price(price), new Size(size),
-                    new PropertyType("HDB"));
+                    new PropertyType("Condo"));
         new AddPropertyCommand(index, property).execute(model);
     }
 }

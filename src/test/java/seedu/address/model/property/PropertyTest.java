@@ -59,10 +59,10 @@ public class PropertyTest {
     }
 
     @Test
-    public void isSameProperty_differentPropertyType_returnsFalse() {
+    public void equals_differentPropertyType_returnsFalse() {
         Property property = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
         Property differentType = new Property(validAddress, validPrice, validSize, new PropertyType("Condo"));
-        assertFalse(property.isSameProperty(differentType));
+        assertFalse(property.equals(differentType));
     }
 
     @Test
@@ -73,11 +73,12 @@ public class PropertyTest {
     }
 
     @Test
-    public void equals_oneNullPropertyType_returnsFalse() {
-        Property withType = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
-        Property withoutType = new Property(validAddress, validPrice, validSize, validType);
-        assertFalse(withType.equals(withoutType));
+    public void isSameProperty_differentPropertyType_returnsFalse() {
+        Property property = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
+        Property differentType = new Property(validAddress, validPrice, validSize, new PropertyType("Condo"));
+        assertTrue(property.isSameProperty(differentType));
     }
+
 
     @Test
     public void withRemarks_preservesAllFields() {

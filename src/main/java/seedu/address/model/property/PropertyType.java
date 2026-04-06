@@ -63,7 +63,7 @@ public class PropertyType {
             return false;
         }
         PropertyType otherType = (PropertyType) other;
-        return value.equals(otherType.value);
+        return value.equalsIgnoreCase(otherType.value);
     }
 
     @Override

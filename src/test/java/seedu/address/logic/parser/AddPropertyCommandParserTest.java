@@ -39,7 +39,8 @@ public class AddPropertyCommandParserTest {
                 + PREFIX_LISTING_INDEX + "1 "
                 + PREFIX_ADDRESS + VALID_ADDRESS + " "
                 + PREFIX_PRICE + VALID_PRICE + " "
-                + PREFIX_SIZE + VALID_SIZE;
+                + PREFIX_SIZE + VALID_SIZE + " "
+                + PREFIX_TYPE + VALID_TYPE;
 
         Property property = new Property(
                 new PropertyAddress(VALID_ADDRESS),
@@ -92,8 +93,7 @@ public class AddPropertyCommandParserTest {
                 + PREFIX_LISTING_INDEX + "1 "
                 + PREFIX_ADDRESS + VALID_ADDRESS + " "
                 + PREFIX_PRICE + VALID_PRICE + " "
-                + PREFIX_SIZE + VALID_SIZE + " "
-                + PREFIX_TYPE + VALID_TYPE;;
+                + PREFIX_TYPE + VALID_TYPE;
 
         assertParseFailure(parser, userInput,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
@@ -123,7 +123,8 @@ public class AddPropertyCommandParserTest {
                 + PREFIX_LISTING_INDEX + "1 "
                 + PREFIX_ADDRESS + INVALID_ADDRESS + " "
                 + PREFIX_PRICE + VALID_PRICE + " "
-                + PREFIX_SIZE + VALID_SIZE;
+                + PREFIX_SIZE + VALID_SIZE + " "
+                + PREFIX_TYPE + VALID_TYPE;
 
         assertParseFailure(parser, userInput, PropertyAddress.MESSAGE_CONSTRAINTS);
     }
@@ -134,7 +135,8 @@ public class AddPropertyCommandParserTest {
                 + PREFIX_LISTING_INDEX + "1 "
                 + PREFIX_ADDRESS + VALID_ADDRESS + " "
                 + PREFIX_PRICE + INVALID_PRICE + " "
-                + PREFIX_SIZE + VALID_SIZE;
+                + PREFIX_SIZE + VALID_SIZE + " "
+                + PREFIX_TYPE + VALID_TYPE;
 
         assertParseFailure(parser, userInput, Price.MESSAGE_CONSTRAINTS);
     }
@@ -145,7 +147,8 @@ public class AddPropertyCommandParserTest {
                 + PREFIX_LISTING_INDEX + "1 "
                 + PREFIX_ADDRESS + VALID_ADDRESS + " "
                 + PREFIX_PRICE + VALID_PRICE + " "
-                + PREFIX_SIZE + INVALID_SIZE;
+                + PREFIX_SIZE + INVALID_SIZE + " "
+                + PREFIX_TYPE + VALID_TYPE;
 
         assertParseFailure(parser, userInput, Size.MESSAGE_CONSTRAINTS);
     }

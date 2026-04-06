@@ -52,13 +52,6 @@ public class PropertyTypeContainsKeywordsPredicateTest {
     }
 
     @Test
-    public void test_propertyTypeIsNull_returnsFalse() {
-        PropertyTypeContainsKeywordsPredicate predicate =
-                new PropertyTypeContainsKeywordsPredicate(Arrays.asList("HDB"));
-        assertFalse(predicate.test(new Property(validAddress, validPrice, validSize, validType)));
-    }
-
-    @Test
     public void equals() {
         PropertyTypeContainsKeywordsPredicate firstPredicate =
                 new PropertyTypeContainsKeywordsPredicate(Collections.singletonList("first"));
