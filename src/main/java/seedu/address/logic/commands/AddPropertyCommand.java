@@ -151,16 +151,16 @@ public class AddPropertyCommand extends Command {
      * @throws CommandException If the property violates any constraints.
      */
     private void ensurePropertyCanBeAdded(Model model, Person personToEdit) throws CommandException {
-      if (personToEdit.getProperties().stream()
-          .anyMatch(p -> p.isSameProperty(property))) {
-        throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
-      }
+        if (personToEdit.getProperties().stream()
+                .anyMatch(p -> p.isSameProperty(property))) {
+            throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
+        }
       
-      ensurePropertyNotOwnedByAnotherClient(model, personToEdit);
+        ensurePropertyNotOwnedByAnotherClient(model, personToEdit);
       
-      if (isHdbProperty(property) && personToEdit.hasHdbProperty()) {
-        throw new CommandException(MESSAGE_DUPLICATE_HDB_PROPERTY);
-      }
+        if (isHdbProperty(property) && personToEdit.hasHdbProperty()) {
+            throw new CommandException(MESSAGE_DUPLICATE_HDB_PROPERTY);
+        }
     }
 
     /**
