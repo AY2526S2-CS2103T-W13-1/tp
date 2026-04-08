@@ -224,4 +224,98 @@ public class AddPropertyCommandParserTest {
                 " i/1 a/311 Clementi Ave 2 pr/1200000 s/1200 type/HDB type/Condo",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
     }
+
+    @Test
+    public void parse_duplicateType_failure() {
+        String userInput = " "
+                + PREFIX_LISTING_INDEX + "1 "
+                + PREFIX_ADDRESS + VALID_ADDRESS + " "
+                + PREFIX_PRICE + VALID_PRICE + " "
+                + PREFIX_SIZE + VALID_SIZE + " "
+                + PREFIX_TYPE + "HDB "
+                + PREFIX_TYPE + "Condo";
+        assertParseFailure(parser, userInput,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_typeLowercase_success() {
+        String userInput = " "
+                + PREFIX_LISTING_INDEX + "1 "
+                + PREFIX_ADDRESS + VALID_ADDRESS + " "
+                + PREFIX_PRICE + VALID_PRICE + " "
+                + PREFIX_SIZE + VALID_SIZE + " "
+                + PREFIX_TYPE + "hdb";
+
+        Property property = new Property(
+                new PropertyAddress(VALID_ADDRESS),
+                new Price(VALID_PRICE),
+                new Size(VALID_SIZE),
+                new PropertyType("hdb")); // normalises to "HDB" internally
+        AddPropertyCommand expectedCommand = new AddPropertyCommand(Index.fromOneBased(1), property);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_typeCondoVariants_success() {
+        String userInput = " "
+                + PREFIX_LISTING_INDEX + "1 "
+                + PREFIX_ADDRESS + VALID_ADDRESS + " "
+                + PREFIX_PRICE + VALID_PRICE + " "
+                + PREFIX_SIZE + VALID_SIZE + " "
+                + PREFIX_TYPE + "condo";
+
+        Property property = new Property(
+                new PropertyAddress(VALID_ADDRESS),
+                new Price(VALID_PRICE),
+                new Size(VALID_SIZE),
+                new PropertyType("condo")); // normalises to "Condo" internally
+        AddPropertyCommand expectedCommand = new AddPropertyCommand(Index.fromOneBased(1), property);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_invalidIndex_failure() {
+        String userInput = " "
+                + PREFIX_LISTING_INDEX + "0 "
+                + PREFIX_ADDRESS + VALID_ADDRESS + " "
+                + PREFIX_PRICE + VALID_PRICE + " "
+                + PREFIX_SIZE + VALID_SIZE + " "
+                + PREFIX_TYPE + VALID_TYPE;
+        assertParseFailure(parser, userInput,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_nonNumericIndex_failure() {
+        String userInput = " "
+                + PREFIX_LISTING_INDEX + "abc "
+                + PREFIX_ADDRESS + VALID_ADDRESS + " "
+                + PREFIX_PRICE + VALID_PRICE + " "
+                + PREFIX_SIZE + VALID_SIZE + " "
+                + PREFIX_TYPE + VALID_TYPE;
+        assertParseFailure(parser, userInput,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_typeCondoSuccess() {
+        String userInput = " "
+                + PREFIX_LISTING_INDEX + "1 "
+                + PREFIX_ADDRESS + VALID_ADDRESS + " "
+                + PREFIX_PRICE + VALID_PRICE + " "
+                + PREFIX_SIZE + VALID_SIZE + " "
+                + PREFIX_TYPE + "Condo";
+
+        Property property = new Property(
+                new PropertyAddress(VALID_ADDRESS),
+                new Price(VALID_PRICE),
+                new Size(VALID_SIZE),
+                new PropertyType("Condo"));
+        AddPropertyCommand expectedCommand = new AddPropertyCommand(Index.fromOneBased(1), property);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
 }

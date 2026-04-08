@@ -50,11 +50,6 @@ public class AddPropertyCommandParser implements Parser<AddPropertyCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
         }
 
-        if (argMultimap.getAllValues(PREFIX_TYPE).size() != 1) {
-            throw new ParseException(String.format(
-                    MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
-        }
-
         try {
             Index targetIndex = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_LISTING_INDEX).get());
             PropertyAddress address = new PropertyAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
@@ -65,6 +60,10 @@ public class AddPropertyCommandParser implements Parser<AddPropertyCommand> {
 
             Property property = new Property(address, price, size, propertyType);
             return new AddPropertyCommand(targetIndex, property);
+        } catch (ParseException e) {
+            // Invalid index (zero, negative, non-numeric)
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
         } catch (IllegalArgumentException e) {
             throw new ParseException(e.getMessage());
         }
