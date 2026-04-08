@@ -731,3 +731,37 @@ Team size: 5
 4. **Duplicate property error message**: When adding a property that already exists in the address book, the error message should specify which existing property has that address. For example: `A property with the address [ADDRESS] already exists, owned by client [NAME].`
 5. **Out-of-range error message**: Make the error message for out-of-range index more descriptive. When a user types a command like `deleteProperty 99` and there are fewer than 99 contacts, the current error message is `Invalid property index!` We plan to improve this to: `Index 99 is out of range. The current list has [N] properties. Please enter an index between 1 and [N].`
 6. **Improve the edit command output**: Make successful editClient show what was actually changed. Currently, a successful edit command returns `Edited Person: [all fields]`, which makes it hard to see what changed. We plan to update the success message to show only the fields that were modified: e.g., `Edited contact Alex Yeoh: phone updated from 91234567 to 98765432.` This can be extended to editProperty as well, e.g., `Edited property 1: price updated from $500,000 to $550,000.`
+
+## **Appendix: Effort** ##
+
+### Difficulty Level
+
+ClientVault is significantly more complex than AB3. AB3 manages a single entity type (`Person`) with a flat, uniform set of fields. ClientVault introduces **two distinct entities** — clients and properties — each with their own domain-specific fields, validation rules, and UI representations. On top of this, we implemented a **linking mechanism** between clients and properties, which required bidirectional relationship management across the model, storage, and UI layers. The overall difficulty is estimated to be roughly **1.5–2× that of AB3**.
+
+### Challenges Faced
+
+**Managing two entity types.** Extending AB3's single-entity model to support both `Client` and `Property` required significant refactoring of the `Model`, `Logic`, and `Storage` components. Commands that previously operated uniformly on `Person` objects needed to be duplicated and specialised, and parsers had to distinguish between the two entity types at the command level.
+
+**Domain-specific field validation.** Property-specific fields such as property size, type, and price required thoughtful constraints. Determining sensible validation bounds and producing meaningful error messages for each field added a non-trivial amount of implementation and testing effort compared to AB3's simpler `Name`, `Phone`, and `Email` fields.
+
+**UI adaptation.** The default AB3 UI displays a single uniform contact list. We adapted this to differentiate clients from properties visually and to display linked contacts within each card, requiring non-trivial changes to the FXML layout and the `PersonCard` / `PersonListPanel` components.
+
+### Effort Required
+
+Compared to AB3's approximately 6 KLoC of functional code, ClientVault's codebase is meaningfully larger due to the addition of new entity types, new commands, extended parser logic, and the linking feature. We estimate the team put in roughly **300–400 hours** of combined effort across the second half of the semester, roughly distributed as: model/logic refactoring (~30%), new commands and parsers (~25%), storage and data integrity (~15%), UI changes (~15%), testing (~15%).
+
+### Reuse and Adaptation
+
+A significant portion of the project's scaffolding was inherited from **AB3**, including the overall architecture (UI → Logic → Model → Storage), the `Command`/`Parser` framework, JSON serialisation via Jackson, and the JavaFX UI shell. This saved roughly **20–25%** of the effort that would have been required to build from scratch. Our work focused on adapting and extending this base rather than replacing it.
+
+No external libraries beyond those already present in AB3 (`Jackson`, `JavaFX`, `JUnit 5`) were introduced.
+
+### Achievements
+
+- Successfully extended a single-entity address book into a **dual-entity property agent tool** with domain-relevant fields.
+- Implemented a **bidirectional client–property linking system** with referential integrity maintained across edits, deletions, and storage serialisation.
+- Achieved good test coverage across new commands and model classes, maintaining the project's overall code quality bar.
+- Delivered a coherent, property-agent-focused CLI experience that meaningfully differentiates ClientVault from the AB3 baseline.
+
+---
+
