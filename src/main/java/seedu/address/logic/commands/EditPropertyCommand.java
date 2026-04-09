@@ -28,6 +28,7 @@ import seedu.address.model.property.Size;
  * Edits a property belonging to an existing client in the address book.
  */
 public class EditPropertyCommand extends Command {
+
     public static final String COMMAND_WORD = "editProperty";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the property identified "
@@ -56,8 +57,10 @@ public class EditPropertyCommand extends Command {
     private final EditPropertyDescriptor editPropertyDescriptor;
 
     /**
-     * @param index                  of the property to edit
-     * @param editPropertyDescriptor details to edit the property with
+     * Creates an EditPropertyCommand to edit a property.
+     *
+     * @param index The index of the property to edit.
+     * @param editPropertyDescriptor The descriptor containing new values.
      */
     public EditPropertyCommand(Index index, EditPropertyDescriptor editPropertyDescriptor) {
         requireNonNull(index);
@@ -67,53 +70,29 @@ public class EditPropertyCommand extends Command {
         this.editPropertyDescriptor = new EditPropertyDescriptor(editPropertyDescriptor);
     }
 
+    /**
+     * Executes the command and edits the specified property.
+     *
+     * @param model The model to execute the command on.
+     * @return The result of the command execution.
+     * @throws CommandException If the index is invalid or constraints are violated.
+     */
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
         List<Property> lastShownPropertyList = model.getFilteredPropertyList();
+        validatePropertyList(lastShownPropertyList);
 
-        if (lastShownPropertyList.isEmpty()) {
-            throw new CommandException(MESSAGE_NO_PROPERTIES);
-        }
-
-        if (index.getZeroBased() >= lastShownPropertyList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PROPERTY_DISPLAYED_INDEX);
-        }
-
-        Property propertyToEdit = lastShownPropertyList.get(index.getZeroBased());
+        Property propertyToEdit = getTargetProperty(lastShownPropertyList);
         Property editedProperty = createEditedProperty(propertyToEdit, editPropertyDescriptor);
 
-        for (Person person : model.getAddressBook().getPersonList()) {
-            for (Property p : person.getProperties()) {
-                if (!p.equals(propertyToEdit) && p.isSameProperty(editedProperty)) {
-                    throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
-                }
-            }
-        }
+        ensureNoDuplicateProperty(model, propertyToEdit, editedProperty);
 
-        Person owner = null;
-        for (Person person : model.getFilteredPersonList()) {
-            if (person.getProperties().contains(propertyToEdit)) {
-                owner = person;
-                break;
-            }
-        }
+        Person owner = findOwner(model, propertyToEdit);
 
-        if (owner == null) {
-            throw new CommandException(MESSAGE_PROPERTY_OWNER_NOT_FOUND);
-        }
-
-        //@Liu Zhiyuan use chatgpt to help with writing next 8 lines
-        //to ensure the order of property will not be changed.
-        Set<Property> updatedProperties = new LinkedHashSet<>();
-        for (Property p : owner.getProperties()) {
-            if (p.equals(propertyToEdit)) {
-                updatedProperties.add(editedProperty);
-            } else {
-                updatedProperties.add(p);
-            }
-        }
+        Set<Property> updatedProperties =
+                replacePropertyPreserveOrder(owner, propertyToEdit, editedProperty);
 
         Person editedPerson = new Person(
                 owner.getName(),
@@ -132,20 +111,8 @@ public class EditPropertyCommand extends Command {
     }
 
     /**
-     * Creates and returns a {@code Property} with the details of {@code propertyToEdit}
-     * edited with {@code editPropertyDescriptor}.
+     * Returns true if both commands have the same index and descriptor.
      */
-    private static Property createEditedProperty(Property propertyToEdit,
-                                                 EditPropertyDescriptor editPropertyDescriptor) {
-        assert propertyToEdit != null;
-
-        PropertyAddress updatedAddress = editPropertyDescriptor.getAddress().orElse(propertyToEdit.getAddress());
-        Price updatedPrice = editPropertyDescriptor.getPrice().orElse(propertyToEdit.getPrice());
-        Size updatedSize = editPropertyDescriptor.getSize().orElse(propertyToEdit.getSize());
-        PropertyType updatedType = editPropertyDescriptor.getType().orElse(propertyToEdit.getPropertyType());
-        return new Property(updatedAddress, updatedPrice, updatedSize, updatedType);
-    }
-
     @Override
     public boolean equals(Object other) {
         if (other == this) {
@@ -156,14 +123,113 @@ public class EditPropertyCommand extends Command {
             return false;
         }
 
-        EditPropertyCommand otherEditPropertyCommand = (EditPropertyCommand) other;
-        return index.equals(otherEditPropertyCommand.index)
-                && editPropertyDescriptor.equals(otherEditPropertyCommand.editPropertyDescriptor);
+        EditPropertyCommand otherCommand = (EditPropertyCommand) other;
+        return index.equals(otherCommand.index)
+                && editPropertyDescriptor.equals(otherCommand.editPropertyDescriptor);
+    }
+
+    /**
+     * Validates that the property list is not empty.
+     *
+     * @param propertyList The list of properties displayed.
+     * @throws CommandException If the list is empty.
+     */
+    private void validatePropertyList(List<Property> propertyList) throws CommandException {
+        if (propertyList.isEmpty()) {
+            throw new CommandException(MESSAGE_NO_PROPERTIES);
+        }
+    }
+
+    /**
+     * Returns the target property.
+     *
+     * @param propertyList The list of properties displayed.
+     * @return The property to edit.
+     * @throws CommandException If index is invalid.
+     */
+    private Property getTargetProperty(List<Property> propertyList) throws CommandException {
+        if (index.getZeroBased() >= propertyList.size()) {
+            throw new CommandException(Messages.MESSAGE_INVALID_PROPERTY_DISPLAYED_INDEX);
+        }
+        return propertyList.get(index.getZeroBased());
+    }
+
+    /**
+     * Ensures that no duplicate property exists in the address book.
+     *
+     * @param model The model containing the address book data.
+     * @param original The original property before editing.
+     * @param edited The edited property to validate.
+     * @throws CommandException If a duplicate property is found.
+     */
+    private void ensureNoDuplicateProperty(Model model,
+                                           Property original,
+                                           Property edited) throws CommandException {
+        for (Person person : model.getAddressBook().getPersonList()) {
+            for (Property p : person.getProperties()) {
+                if (!p.equals(original) && p.isSameProperty(edited)) {
+                    throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
+                }
+            }
+        }
+    }
+
+    /**
+     * Finds and returns the owner of the specified property.
+     *
+     * @param model The model containing the address book data.
+     * @param property The property whose owner is to be found.
+     * @return The client who owns the specified property.
+     * @throws CommandException If the owner cannot be found.
+     */
+    private Person findOwner(Model model, Property property) throws CommandException {
+        for (Person person : model.getFilteredPersonList()) {
+            if (person.getProperties().contains(property)) {
+                return person;
+            }
+        }
+        throw new CommandException(MESSAGE_PROPERTY_OWNER_NOT_FOUND);
+    }
+
+    /**
+     * Replaces the specified property with a new property while preserving the original order.
+     *
+     * @param owner The owner of the property.
+     * @param originalProperty The original property to be replaced.
+     * @param editedProperty The new property to replace with.
+     * @return A new set of properties with the updated property.
+     */
+    //This method is written by @liuzhiyuan with the help of chatgpt.
+    private Set<Property> replacePropertyPreserveOrder(Person owner,
+                                                       Property originalProperty,
+                                                       Property editedProperty) {
+        Set<Property> updated = new LinkedHashSet<>();
+        for (Property p : owner.getProperties()) {
+            updated.add(p.equals(originalProperty) ? editedProperty : p);
+        }
+        return updated;
+    }
+
+    /**
+     * Creates and returns an edited property based on the given descriptor.
+     *
+     * @param propertyToEdit The original property.
+     * @param descriptor The descriptor containing updated values.
+     * @return The edited property.
+     */
+    private static Property createEditedProperty(Property propertyToEdit,
+                                                 EditPropertyDescriptor descriptor) {
+        PropertyAddress address = descriptor.getAddress().orElse(propertyToEdit.getAddress());
+        Price price = descriptor.getPrice().orElse(propertyToEdit.getPrice());
+        Size size = descriptor.getSize().orElse(propertyToEdit.getSize());
+        PropertyType type = descriptor.getType().orElse(propertyToEdit.getPropertyType());
+
+        return new Property(address, price, size, type);
     }
 
     /**
      * Stores the details to edit the property with.
-     * Each non-empty field value will replace the corresponding field value of the property.
+     * Each non-null field value will replace the corresponding field value of the property.
      */
     public static class EditPropertyDescriptor {
         private PropertyAddress address;
@@ -171,8 +237,7 @@ public class EditPropertyCommand extends Command {
         private Size size;
         private PropertyType type;
 
-        public EditPropertyDescriptor() {
-        }
+        public EditPropertyDescriptor() {}
 
         /**
          * Copy constructor.
@@ -184,9 +249,6 @@ public class EditPropertyCommand extends Command {
             setType(toCopy.type);
         }
 
-        /**
-         * Returns true if at least one field is edited.
-         */
         public boolean isAnyFieldEdited() {
             return CollectionUtil.isAnyNonNull(address, price, size, type);
         }
@@ -197,10 +259,6 @@ public class EditPropertyCommand extends Command {
 
         public Optional<PropertyAddress> getAddress() {
             return Optional.ofNullable(address);
-        }
-
-        public void setType(PropertyType type) {
-            this.type = type;
         }
 
         public void setPrice(Price price) {
@@ -217,6 +275,10 @@ public class EditPropertyCommand extends Command {
 
         public Optional<Size> getSize() {
             return Optional.ofNullable(size);
+        }
+
+        public void setType(PropertyType type) {
+            this.type = type;
         }
 
         public Optional<PropertyType> getType() {

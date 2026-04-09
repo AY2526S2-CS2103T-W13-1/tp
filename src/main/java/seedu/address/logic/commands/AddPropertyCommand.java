@@ -22,6 +22,7 @@ import seedu.address.model.property.Property;
 public class AddPropertyCommand extends Command {
 
     public static final String COMMAND_WORD = "addProperty";
+    public static final String HDB_TYPE = "HDB";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a property to the client identified "
             + "by the index number used in the displayed person list. \n"
@@ -38,12 +39,12 @@ public class AddPropertyCommand extends Command {
             + PREFIX_SIZE + "1200 "
             + PREFIX_TYPE + "HDB";
 
-    public static final String MESSAGE_SUCCESS = "New property added to person: %1$s\n%2$s";
-    public static final String MESSAGE_DUPLICATE_PROPERTY = "This person already has this property.";
-    public static final String MESSAGE_DUPLICATE_HDB_PROPERTY = "This person already has an HDB property. "
-            + "Each person can only have a maximum of 1 HDB property.";
+    public static final String MESSAGE_SUCCESS = "New property added to client: %1$s\n%2$s";
+    public static final String MESSAGE_DUPLICATE_PROPERTY = "This client already has this property.";
+    public static final String MESSAGE_DUPLICATE_HDB_PROPERTY = "This client already has an HDB property. "
+            + "Each client can only have a maximum of 1 HDB property.";
     public static final String MESSAGE_NO_PERSONS = "No clients found. Please add a client first.";
-    public static final String MESSAGE_INVALID_PERSON_INDEX = "The person index provided is invalid.";
+    public static final String MESSAGE_INVALID_PERSON_INDEX = "The client index provided is invalid.";
     public static final String MESSAGE_PROPERTY_ALREADY_OWNED = "This property is already owned by another client.";
 
     private final Index targetIndex;
@@ -51,7 +52,7 @@ public class AddPropertyCommand extends Command {
 
     /**
      * Creates an AddPropertyCommand to add the specified {@code Property}
-     * to the person at the specified {@code Index}.
+     * to the client at the specified {@code Index}.
      *
      * @param targetIndex The index of the person to add the property to.
      * @param property    The property to add.
@@ -75,33 +76,10 @@ public class AddPropertyCommand extends Command {
         requireNonNull(model);
 
         List<Person> lastShownList = model.getFilteredPersonList();
+        validatePersonList(lastShownList);
 
-        if (lastShownList.isEmpty()) {
-            throw new CommandException(MESSAGE_NO_PERSONS);
-        }
-
-        if (targetIndex.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(MESSAGE_INVALID_PERSON_INDEX);
-        }
-
-        Person personToEdit = lastShownList.get(targetIndex.getZeroBased());
-
-        if (personToEdit.getProperties().stream()
-                .anyMatch(p -> p.isSameProperty(property))) {
-            throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
-        }
-
-        for (Person person : model.getAddressBook().getPersonList()) {
-            if (!person.equals(personToEdit) && person.getProperties().contains(property)) {
-                throw new CommandException(MESSAGE_PROPERTY_ALREADY_OWNED);
-            }
-        }
-
-        // Check if trying to add an HDB property when person already has one
-        if (property.getPropertyType().toString().equalsIgnoreCase("HDB")
-                && personToEdit.hasHdbProperty()) {
-            throw new CommandException(MESSAGE_DUPLICATE_HDB_PROPERTY);
-        }
+        Person personToEdit = getTargetPerson(lastShownList);
+        ensurePropertyCanBeAdded(model, personToEdit);
 
         Person editedPerson = personToEdit.addProperty(property);
         model.setPerson(personToEdit, editedPerson);
@@ -113,6 +91,7 @@ public class AddPropertyCommand extends Command {
      * Returns true if both commands have the same target index and property.
      *
      * @param other The other object to compare against.
+     * @return True if both commands are equal, false otherwise.
      */
     @Override
     public boolean equals(Object other) {
@@ -135,5 +114,79 @@ public class AddPropertyCommand extends Command {
                 .add("targetIndex", targetIndex)
                 .add("property", property)
                 .toString();
+    }
+
+    /**
+     * Validates that the displayed client list is not empty.
+     *
+     * @param lastShownList The list of clients currently displayed.
+     * @throws CommandException If the list is empty.
+     */
+    private void validatePersonList(List<Person> lastShownList) throws CommandException {
+        if (lastShownList.isEmpty()) {
+            throw new CommandException(MESSAGE_NO_PERSONS);
+        }
+    }
+
+    /**
+     * Returns the target person identified by the target index.
+     *
+     * @param lastShownList The list of clients currently displayed.
+     * @return The client at the specified index.
+     * @throws CommandException If the index is invalid.
+     */
+    private Person getTargetPerson(List<Person> lastShownList) throws CommandException {
+        if (targetIndex.getZeroBased() >= lastShownList.size()) {
+            throw new CommandException(MESSAGE_INVALID_PERSON_INDEX);
+        }
+
+        return lastShownList.get(targetIndex.getZeroBased());
+    }
+
+    /**
+     * Ensures that the property can be added to the specified client.
+     *
+     * @param model        The model containing the address book data.
+     * @param personToEdit The client to add the property to.
+     * @throws CommandException If the property violates any constraints.
+     */
+    private void ensurePropertyCanBeAdded(Model model, Person personToEdit) throws CommandException {
+        if (personToEdit.getProperties().stream()
+                .anyMatch(p -> p.isSameProperty(property))) {
+            throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
+        }
+
+        ensurePropertyNotOwnedByAnotherClient(model, personToEdit);
+
+        if (isHdbProperty(property) && personToEdit.hasHdbProperty()) {
+            throw new CommandException(MESSAGE_DUPLICATE_HDB_PROPERTY);
+        }
+    }
+
+    /**
+     * Ensures that the property is not already owned by another client.
+     *
+     * @param model        The model containing the address book data.
+     * @param personToEdit The client attempting to own the property.
+     * @throws CommandException If the property is already owned by another client.
+     */
+    private void ensurePropertyNotOwnedByAnotherClient(Model model, Person personToEdit)
+            throws CommandException {
+        for (Person person : model.getAddressBook().getPersonList()) {
+            if (!person.equals(personToEdit) && person.getProperties().contains(property)) {
+                throw new CommandException(MESSAGE_PROPERTY_ALREADY_OWNED);
+            }
+        }
+    }
+
+    /**
+     * Returns true if the given property is an HDB property.
+     *
+     * @param property The property to check.
+     * @return True if the property type is HDB, false otherwise.
+     */
+    private boolean isHdbProperty(Property property) {
+        return property.getPropertyType() != null
+                && property.getPropertyType().toString().equalsIgnoreCase(HDB_TYPE);
     }
 }
