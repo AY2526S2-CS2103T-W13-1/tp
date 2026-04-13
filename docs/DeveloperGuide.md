@@ -292,6 +292,7 @@ The following sequence diagram illustrates the interactions:
 The filterClient feature allows users to filter the client list by name keywords, tag keywords, or both, and automatically shows only the properties belonging to those filtered clients. This is done by updating the predicates on the FilteredList objects.
 
 The `FilterClientCommand` is executed through the following flow:
+
 1. The command is executed with a client predicate (`PersonMatchesFilterPredicate`) built from the user input, which may include name keywords, tag keywords, or both. 
 2. `FilterClientCommand` calls `Model#updateFilteredPersonList(predicate)`. 
 3. `ModelManager#updateFilteredPersonList(...)` updates the person `FilteredList` by calling `setPredicate(...)`.
@@ -336,6 +337,29 @@ The following sequence diagram illustrates the interactions:
 * **Numeric Range Filtering**: The predicate supports optional minimum and maximum price and size boundaries. A property must fall within all specified ranges to match.
 * **Cascading Filter**: After filtering properties, the command automatically updates the person list to show only those who own matching properties, providing a complete view of relevant data.
 * **Flexible Criteria**: At least one filter criterion (address keywords, price range, or size range) must be provided, but users can combine any of these filters as needed.
+
+### Sort Property feature
+
+The sortProperty feature allows users to sort the currently displayed property list by price or size in ascending or descending order. This is done by applying a Comparator<Property> to the SortedList<Property>.
+
+The `SortPropertyCommand` is executed through the following flow:
+
+1. `SortPropertyCommand` constructs a `Comparator<Property>` based on the specified sortType — either "price" or "size".
+2. If the specified order is "down", the comparator is reversed.
+3. `SortPropertyCommand` calls `Model#sortPropertyList(comparator)`.
+4. `ModelManager#sortPropertyList(...)` calls `setComparator(comparator)` on the underlying `SortedList<Property>`.
+5. The sorted list immediately reflects the new order.
+6. The command returns a `CommandResult`.
+
+The following sequence diagram illustrates the interactions:
+
+<puml src="diagrams/SortPropertySequenceDiagram.puml" alt="SortProperty sequence diagram" />
+
+#### Design Highlights
+
+* **Layered List Architecture**: Properties are stored in a `SortedList<Property>` wrapping a `FilteredList<Property>`. Sort and filter operations are independent and can be applied simultaneously without conflict.
+* **Numeric Comparison**: The comparator parses `Price.value` or `Size.value` string fields to Long before comparing, ensuring correct numeric ordering rather than lexicographic ordering.
+* **Persistent Sort State**: The sort order persists until another sortProperty command is issued or the application is restarted, allowing users to browse sorted results freely.
 
 ### \[Proposed\] Undo/redo feature
 
