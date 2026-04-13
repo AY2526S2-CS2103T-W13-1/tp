@@ -5,6 +5,7 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailur
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +30,7 @@ public class FilterPropertyCommandParserTest {
         FilterPropertyCommand expectedFilterPropertyCommand =
                 new FilterPropertyCommand(new PropertyMatchesFilterPredicate(
                         Arrays.asList("Clementi", "Punggol"),
+                        Collections.emptyList(),
                         0,
                         Long.MAX_VALUE,
                         0,
@@ -44,6 +46,7 @@ public class FilterPropertyCommandParserTest {
         FilterPropertyCommand expectedFilterPropertyCommand =
                 new FilterPropertyCommand(new PropertyMatchesFilterPredicate(
                         Arrays.asList("Clementi"),
+                        Collections.emptyList(),
                         1000,
                         10000,
                         500,
@@ -58,6 +61,20 @@ public class FilterPropertyCommandParserTest {
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterPropertyCommand.MESSAGE_USAGE));
         assertParseFailure(parser, " s/5000 500",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterPropertyCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_validTypeArg_returnsFilterPropertyCommand() {
+        FilterPropertyCommand expectedFilterPropertyCommand =
+                new FilterPropertyCommand(new PropertyMatchesFilterPredicate(
+                        Collections.emptyList(),
+                        Arrays.asList("HDB"),
+                        0,
+                        Long.MAX_VALUE,
+                        0,
+                        Long.MAX_VALUE));
+
+        assertParseSuccess(parser, " type/HDB", expectedFilterPropertyCommand);
     }
 
     @Test

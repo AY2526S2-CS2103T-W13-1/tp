@@ -20,6 +20,7 @@ public class PropertyMatchesFilterPredicateTest {
     public void equals() {
         PropertyMatchesFilterPredicate firstPredicate = new PropertyMatchesFilterPredicate(
                 Collections.singletonList("Clementi"),
+                Collections.emptyList(),
                 0,
                 Long.MAX_VALUE,
                 0,
@@ -27,6 +28,7 @@ public class PropertyMatchesFilterPredicateTest {
 
         PropertyMatchesFilterPredicate secondPredicate = new PropertyMatchesFilterPredicate(
                 Collections.singletonList("Punggol"),
+                Collections.emptyList(),
                 0,
                 Long.MAX_VALUE,
                 0,
@@ -38,6 +40,7 @@ public class PropertyMatchesFilterPredicateTest {
         // same values -> returns true
         PropertyMatchesFilterPredicate firstPredicateCopy = new PropertyMatchesFilterPredicate(
                 Collections.singletonList("Clementi"),
+                Collections.emptyList(),
                 0,
                 Long.MAX_VALUE,
                 0,
@@ -58,6 +61,7 @@ public class PropertyMatchesFilterPredicateTest {
     public void test_matchesAddressKeyword_returnsTrue() {
         PropertyMatchesFilterPredicate predicate = new PropertyMatchesFilterPredicate(
                 Collections.singletonList("Clementi"),
+                Collections.emptyList(),
                 0,
                 Long.MAX_VALUE,
                 0,
@@ -68,6 +72,7 @@ public class PropertyMatchesFilterPredicateTest {
     @Test
     public void test_matchesPriceAndSizeRange_returnsTrue() {
         PropertyMatchesFilterPredicate predicate = new PropertyMatchesFilterPredicate(
+                Collections.emptyList(),
                 Collections.emptyList(),
                 1100000,
                 1300000,
@@ -80,6 +85,7 @@ public class PropertyMatchesFilterPredicateTest {
     public void test_outsideRange_returnsFalse() {
         PropertyMatchesFilterPredicate pricePredicate = new PropertyMatchesFilterPredicate(
                 Collections.emptyList(),
+                Collections.emptyList(),
                 100000,
                 200000,
                 0,
@@ -87,6 +93,7 @@ public class PropertyMatchesFilterPredicateTest {
         assertFalse(pricePredicate.test(PROPERTY));
 
         PropertyMatchesFilterPredicate sizePredicate = new PropertyMatchesFilterPredicate(
+                Collections.emptyList(),
                 Collections.emptyList(),
                 0,
                 Long.MAX_VALUE,
@@ -99,10 +106,23 @@ public class PropertyMatchesFilterPredicateTest {
     public void test_addressAndRangeCombined_returnsFalseWhenAnyCriterionFails() {
         PropertyMatchesFilterPredicate predicate = new PropertyMatchesFilterPredicate(
                 Arrays.asList("Punggol"),
+                Collections.emptyList(),
                 1100000,
                 1300000,
                 1000,
                 1500);
         assertFalse(predicate.test(PROPERTY));
+    }
+
+    @Test
+    public void test_matchesTypeKeyword_returnsTrue() {
+        PropertyMatchesFilterPredicate predicate = new PropertyMatchesFilterPredicate(
+                Collections.emptyList(),
+                Collections.singletonList("hdb"),
+                0,
+                Long.MAX_VALUE,
+                0,
+                Long.MAX_VALUE);
+        assertTrue(predicate.test(PROPERTY));
     }
 }
