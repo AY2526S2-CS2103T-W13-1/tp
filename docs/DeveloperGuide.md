@@ -227,6 +227,29 @@ The following sequence diagram illustrates the interactions:
 
 <puml src="diagrams/EditPropertySequenceDiagram.puml" alt="EditProperty sequence diagram" />
 
+### Delete Client feature
+
+The delete client feature allows users to delete a client identified by the index in the displayed property list.
+This is done by validating the client deletion, deleting the properties linked with the client(if any) and updating client list in the addressbook
+
+The `DeleteClientCommand` is executed through the following flow:
+1. `DeleteClientCommand` retrieves the currently displayed client list by calling `Model#getFilteredPersonList()`.
+2. The target client is identified using the provided index.
+3. `DeleteClientCommand` validates that the indexed target client exists
+4. `DeleteClientCommand` then calls Person#getProperties() to get the list of properties owned by the target client
+5. If the target client has properties listed, the command will execute the `DeletePropertyCommand` on the target clients properties until the target client has no more properties listed
+6. Then, `DeleteClientCommand` calls `Model#getFilteredPersonList()` again to get the updated client list after all the properties linked to the target client has been deleted.
+7. The target client is retrieved from the new updated list and then removed from the list
+8. `DeleteClientCommand` returns a CommandResult after the target client have been removed from the list
+
+For simplicity, the sequence diagram focuses on the main interactions involved in checking if the client has properties
+and deleting the properties if any. Then finally removing the target client from the list.
+Low-level validation details such as exception handling is omitted.
+
+The following sequence diagram illustrates the interactions:
+
+<puml src="diagrams/DeleteClientCommand.puml" alt="Interactions between DeleteClientCommand and ModelManager for list updates" />
+
 ### Delete Property feature
 
 The delete property feature allows users to delete a property identified by the index in the displayed property list.
@@ -246,7 +269,7 @@ omits lower-level details such as index checks, ownership checks, exception hand
 
 The following sequence diagram illustrates the interactions:
 
-<puml src="diagrams/DeletePropertySequenceDiagram.puml" alt="Interactions between FilterPropertyCommand and ModelManager for filtered list updates" />
+<puml src="diagrams/DeletePropertySequenceDiagram.puml" alt="Interactions between DeletePropertyCommand and ModelManager for list updates" />
 
 ### Filter Property feature
 
