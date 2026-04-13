@@ -825,7 +825,7 @@ testers are expected to do more *exploratory* testing.
     1. Prerequisites: At least one client exists in the list.
     2. Test case: `addProperty i/1 a/ p/500000 s/1000 t/HDB`<br>
        Expected: No property is added. Error details shown in the status message.
-    3. Test case: `addProperty 1 a/123 Main Street p/abc s/1000 t/HDB`<br>
+    3. Test case: `addProperty i/1 a/123 Main Street p/abc s/1000 t/HDB`<br>
        Expected: No property is added. Error details shown in the status message.
     4. Other incorrect add commands to try: `addProperty`, `addProperty x`, `addProperty 1 a/123 Main Street`, `...`<br>
        Expected: Similar to previous.
@@ -879,14 +879,14 @@ testers are expected to do more *exploratory* testing.
 
 1. Editing a client with valid details
    1. Prerequisites: At least one client exists in the list.
-   2. Test case: `editClient i/1 n/John Smith p/98765432`<br>
+   2. Test case: `editClient 1 n/John Smith p/98765432`<br>
       Expected: First client's name and phone are updated. Details of the edited client shown in the status message.
-   3. Test case: `editClient i/1 e/johnsmith@example.com`<br>
+   3. Test case: `editClient 1 e/johnsmith@example.com`<br>
       Expected: First client's email is updated. Details of the edited client shown in the status message.
 
 2. Editing a client with invalid details
    1. Prerequisites: At least one client exists in the list.
-   2. Test case: `editClient i/1 n/`<br>
+   2. Test case: `editClient 1 n/`<br>
       Expected: No client is edited. Error details shown in the status message.
    3. Test case: `editClient 1 p/abc`<br>
       Expected: No client is edited. Error details shown in the status message.
@@ -895,7 +895,7 @@ testers are expected to do more *exploratory* testing.
 
 3. Editing a client results in duplicate client entry
    1. Prerequisites: At least two clients exist in the list. Edit the details of one client with the details of another client.
-   2. Test case: `editClient i/1 n/Jane Smith p/91234567` <br>
+   2. Test case: `editClient 1 n/Jane Smith p/91234567` <br>
       Expected: No client is edited. Error details shown in the status message.
 
 ### Editing a property
