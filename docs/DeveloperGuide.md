@@ -754,6 +754,47 @@ testers are expected to do more *exploratory* testing.
    2. Test case: `exit`<br>
       Expected: Window is closed.
 
+### Adding a client
+
+1. Adding a client with valid details
+    1. Prerequisites: None
+    2. Test case: `addClient n/John Doe p/98765432 e/johnd@example.com t/buyer`<br>
+       Expected: New client is added to the list. Details of the added client shown in the status message.
+    3. Test case: `addClient n/Jane Smith p/91234567 e/janes@example.com t/seller`<br>
+       Expected: Another new client is added to the list. Details of the added client shown in the status message.
+
+2. Adding a client with invalid details
+    1. Prerequisites: None
+    2. Test case: `addClient n/ p/98765432 e/johnd@example.com t/buyer`<br>
+       Expected: No client is added. Error details shown in the status message.
+    3. Test case: `addClient n/John Doe p/98765432 e/invalidemail t/buyer`<br>
+       Expected: No client is added. Error details shown in the status message.
+    4. Other incorrect add commands to try: `addClient`, `addClient n/John`, `addClient n/John p/abc`, `...`<br>
+       Expected: Similar to previous.
+
+### Adding a property
+
+1. Adding a property to an existing client
+    1. Prerequisites: At least one client exists in the list.
+    2. Test case: `addProperty i/1 a/123 Main Street p/500000 s/1000 t/HDB`<br>
+       Expected: New property is added to the first client. Details of the added property shown in the status message.
+    3. Test case: `addProperty i/2 a/456 Side Street p/750000 s/1200 t/Condo`<br>
+       Expected: Another property is added to the first client. Details of the added property shown in the status message.
+
+2. Adding a property with invalid details
+    1. Prerequisites: At least one client exists in the list.
+    2. Test case: `addProperty i/1 a/ p/500000 s/1000 t/HDB`<br>
+       Expected: No property is added. Error details shown in the status message.
+    3. Test case: `addProperty 1 a/123 Main Street p/abc s/1000 t/HDB`<br>
+       Expected: No property is added. Error details shown in the status message.
+    4. Other incorrect add commands to try: `addProperty`, `addProperty x`, `addProperty 1 a/123 Main Street`, `...`<br>
+       Expected: Similar to previous.
+
+3. Adding a HDB property to a client who already has a HDB property
+    1. Prerequisites: At least one client exists in the list. The client already has a HDB type property.
+    2. Test case: `addProperty i/1 a/789 Another Street p/550000 s/900 t/HDB`<br>
+       Expected: No property is added. Error details shown in the status message.
+
 ### Deleting a client
 
 1. Deleting a client while all clients are being shown
@@ -774,24 +815,165 @@ testers are expected to do more *exploratory* testing.
    3. Test case: `deleteClient x` (where x is larger than the list size)<br>
       Expected: No client is deleted. No properties are deleted. Error details shown in the status message.
 
+### Deleting a property
+
+1. Deleting a property while all properties are being shown
+   1. Prerequisites: List all properties using the `list` command. Multiple properties in the list.
+   2. Test case: `deleteProperty 1`<br>
+      Expected: First property is deleted from the list. Details of the deleted property shown in the status message.
+   3. Test case: `deleteProperty 0`<br>
+      Expected: No property is deleted. Error details shown in the status message.
+   4. Other incorrect delete commands to try: `deleteProperty`, `deleteProperty x` (where x is larger than the list size)<br>
+      Expected: Similar to previous.
+
+2. Deleting a property while a filtered property list is being shown
+   1. Prerequisites: A `filterProperty` command has been successfully executed. Only some properties in the list.
+   2. Test case: `deleteProperty 1`<br>
+      Expected: First property is deleted from the filtered list. Details of the deleted property shown in the status message.
+      1. Test case: `list`<br>
+         Expected: Deleted property is not present in the list of all properties.
+   3. Test case: `deleteProperty x` (where x is larger than the list size)<br>
+      Expected: No property is deleted. Error details shown in the status message.
+
+### Editing a client
+
+1. Editing a client with valid details
+   1. Prerequisites: At least one client exists in the list.
+   2. Test case: `editClient i/1 n/John Smith p/98765432`<br>
+      Expected: First client's name and phone are updated. Details of the edited client shown in the status message.
+   3. Test case: `editClient i/1 e/johnsmith@example.com`<br>
+      Expected: First client's email is updated. Details of the edited client shown in the status message.
+
+2. Editing a client with invalid details
+   1. Prerequisites: At least one client exists in the list.
+   2. Test case: `editClient i/1 n/`<br>
+      Expected: No client is edited. Error details shown in the status message.
+   3. Test case: `editClient 1 p/abc`<br>
+      Expected: No client is edited. Error details shown in the status message.
+   4. Other incorrect edit commands to try: `editClient`, `editClient x`, `editClient 1`, `...`<br>
+      Expected: Similar to previous.
+
+3. Editing a client results in duplicate client entry
+   1. Prerequisites: At least two clients exist in the list. Edit the details of one client with the details of another client.
+   2. Test case: `editClient i/1 n/Jane Smith p/91234567` <br>
+      Expected: No client is edited. Error details shown in the status message.
+
+### Editing a property
+
+1. Editing a property with valid details
+   1. Prerequisites: At least one property exists in the list.
+   2. Test case: `editProperty 1 a/456 Updated Street p/600000`<br>
+      Expected: First property's address and price are updated. Details of the edited property shown in the status message.
+   3. Test case: `editProperty 1 s/1100 t/Condo`<br>
+      Expected: First property's size and type are updated. Details of the edited property shown in the status message.
+
+2. Editing a property with invalid details
+   1. Prerequisites: At least one property exists in the list.
+   2. Test case: `editProperty 1 a/`<br>
+      Expected: No property is edited. Error details shown in the status message.
+   3. Test case: `editProperty 1 p/abc`<br>
+      Expected: No property is edited. Error details shown in the status message.
+   4. Other incorrect edit commands to try: `editProperty`, `editProperty x`, `editProperty 1`, `...`<br>
+      Expected: Similar to previous.
+
+3. Editing a property results in duplicate property entry or client having 2 HDB type properties
+   1. Prerequisites: At least two properties exist in the list. Edit the details of one property to have the same details as another property, or edit the type of a property to HDB when the client already has another HDB type property.
+   2. Test case: `editProperty 1 a/456 Side Street p/750000 s/1200 t/Condo`<br>
+      Expected: No property is edited. Error details shown in the status message.
+   3. Test case: `editProperty 1 t/HDB` (when the client already has another HDB type property) <br>
+      Expected: No property is edited. Error details shown in the status message.
+
+### Filtering for clients
+
+1. Filtering clients with valid keywords
+   1. Prerequisites: Multiple clients exist in the list.
+   2. Test case: `filterClient n/John`<br>
+      Expected: Only clients with "John" in their name are shown. Property list is filtered to show properties of these clients.
+   3. Test case: `filterClient n/Alex David`<br>
+      Expected: Clients with "Alex" or "David" in their name are shown. Property list is filtered accordingly.
+
+2. Filtering clients with invalid keywords
+   1. Prerequisites: Multiple clients exist in the list.
+   2. Test case: `filterClient n/`<br>
+      Expected: No filtering occurs. Error details shown in the status message.
+   3. Test case: `filterClient`<br>
+      Expected: No filtering occurs. Error details shown in the status message.
+   4. Other incorrect filter commands to try: `filterClient n/`, `filterClient x/keyword`, `...`<br>
+      Expected: Similar to previous.
+
+### Filtering for properties
+
+1. Filtering properties with valid criteria
+   1. Prerequisites: Multiple properties exist in the list.
+   2. Test case: `filterProperty a/Clementi`<br>
+      Expected: Only properties with "Clementi" in their address are shown. Client list is filtered to show owners of these properties.
+   3. Test case: `filterProperty p/500000 1000000 s/1000 1500`<br>
+      Expected: Properties within the price and size ranges are shown. Client list is filtered accordingly.
+
+2. Filtering properties with invalid criteria
+   1. Prerequisites: Multiple properties exist in the list.
+   2. Test case: `filterProperty`<br>
+      Expected: No filtering occurs. Error details shown in the status message.
+   3. Test case: `filterProperty p/500000 1000` (will fail due to min_price being larger than max_price) <br>
+      Expected: No filtering occurs. Error details shown in the status message.
+   4. Other incorrect filter commands to try: `filterProperty x/criteria`, `filterProperty p/abc-1000000`, `...`<br>
+      Expected: Similar to previous.
+
+3. Filtering properties with criteria that match no properties
+   1. Prerequisites: Multiple properties exist in the list.
+   2. Test case: `filterProperty a/Nonexistent`<br>
+      Expected: No properties are shown. Client list is empty. Message shown in the status message that no properties match the criteria.
+
+### Sorting properties
+
+1. Sorting properties with valid criteria
+   1. Prerequisites: Multiple properties exist in the list.
+   2. Test case: `sortProperty st/price o/up`<br>
+      Expected: Properties are sorted by price in ascending order.
+   3. Test case: `sortProperty st/size o/down`<br>
+      Expected: Properties are sorted by size in descending order.
+
+2. Sorting properties with invalid criteria
+   1. Prerequisites: Multiple properties exist in the list.
+   2. Test case: `sortProperty st/invalid o/up`<br>
+      Expected: No sorting occurs. Error details shown in the status message.
+   3. Test case: `sortProperty st/price o/invalid`<br>
+      Expected: No sorting occurs. Error details shown in the status message.
+   4. Other incorrect sort commands to try: `sortProperty`, `sortProperty st/price`, `...`<br>
+      Expected: Similar to previous.
+
+### List command
+
+1. Listing all clients and properties
+   1. Prerequisites: None
+   2. Test case: `list`<br>
+      Expected: All clients and properties are displayed in the lists.
+   3. Test case: `list` after filtering<br>
+      Expected: All clients and properties are displayed, regardless of previous filtering.
+
+2. Listing with no data
+   1. Prerequisites: No clients or properties exist.
+   2. Test case: `list`<br>
+      Expected: Empty lists are displayed with appropriate messages.
+
 ### Saving data
 
 1. Dealing with missing/corrupted data files
-   1. Prerequisites: Saved data file `[JAR file location]/data/addressbook.json` exists and contains valid non-empty data.
-   2. Open the file and remove the name of the first client in the data file to create an invalid data file.
-   3. Save the file and re-launch the app by double-clicking the jar file.<br>
-      Expected: App starts with empty lists. Error details shown in the terminal log.
+    1. Prerequisites: Saved data file `[JAR file location]/data/addressbook.json` exists and contains valid non-empty data.
+    2. Open the file and remove the name of the first client in the data file to create an invalid data file.
+    3. Save the file and re-launch the app by double-clicking the jar file.<br>
+       Expected: App starts with empty lists. Error details shown in the terminal log.
 
 2. Editing data files while maintaining validity
-   1. Prerequisites: Saved data file `[JAR file location]/data/addressbook.json` exists and contains valid non-empty data.
-   2. Open the file and change the phone number of the first client in the data file to `98989898`.
-   3. Save the file and re-launch the app by double-clicking the jar file.<br>
-      Expected: App starts with the most recent data and the phone number of the first client in the list modified.
+    1. Prerequisites: Saved data file `[JAR file location]/data/addressbook.json` exists and contains valid non-empty data.
+    2. Open the file and change the phone number of the first client in the data file to `98989898`.
+    3. Save the file and re-launch the app by double-clicking the jar file.<br>
+       Expected: App starts with the most recent data and the phone number of the first client in the list modified.
 
 ## **Appendix: Planned Enhancements** ##
 Team size: 5
 
-1. **List ordering**: Allow users to order the displayed list of clients or properties by different fields (e.g., name, price, size) using a command like `list orderby/price`. 
+1. **List ordering**: Allow users to order the displayed list of clients or properties by different fields (e.g., name, price, size) using a command like `list orderby/price`.
 2. **Duplicate client error message**: Make the error message for adding a duplicate client more specific. Currently, attempting to add a client with an identical name produces the generic message `This person already exists in the address book.` We plan to update this to: `A client with the name [NAME] already exists`. If this is a different person, consider using a distinguishing middle name or suffix (e.g., `Alice Tan 2`).
 3. **Duplicate phone number error message**: When adding a client with a phone number that already exists in the address book, the error message should specify which existing client has that phone number. For example: `The phone number [PHONE] is already associated with client [NAME].`
 4. **Duplicate property error message**: When adding a property that already exists in the address book, the error message should specify which existing property has that address. For example: `A property with the address [ADDRESS] already exists, owned by client [NAME].`
