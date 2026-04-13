@@ -580,7 +580,7 @@ Goal: Edit a client's details to keep information updated and accurate
 **MSS:**
 
 1. Actor identifies client index in the displayed client list
-2. Actor uses the editClient feature with the client's index and the fields to update (name, phone, email, address, role, tags)
+2. Actor uses the editClient feature with the client's index and the fields to update (name, phone, email, tags)
 3. System verifies client exists at the given index
 4. System validates the provided field formats
 5. System updates the client with the new details
@@ -609,7 +609,7 @@ Goal: Edit a client's details to keep information updated and accurate
 
       Use case resumes from Step 5
 
-* 4b. System detects duplicate client entry after editing (e.g., another client with the same name already exists in the address book)
+* 4b. System detects duplicate client entry after editing (e.g., another client with the same details already exists in the address book)
     * 4b1. System shows error message that the edited client details would result in a duplicate client entry
 
       Use case ends
@@ -619,7 +619,7 @@ Goal: Edit a client's details to keep information updated and accurate
 **Note:**
 
 - Edit Property works the same way, with the following differences:
-  - In step 2, the actor uses the property index and the fields to update (address, price, size, tags) instead of client index and client fields
+  - In step 2, the actor uses the property index and the fields to update (address, price, size, type) instead of client index and client fields
   - In extension 4b, the system will additionally check that the client will not have 2 HDB type properties after the edit on top of checking for duplicate property entry
     </box>
 
