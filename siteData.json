@@ -52,6 +52,7 @@
         "storage-component": "Storage component",
         "common-classes": "Common classes",
         "implementation": "Implementation",
+        "add-client-feature": "Add Client feature",
         "add-property-feature": "Add Property feature",
         "edit-client-feature": "Edit Client feature",
         "edit-property-feature": "Edit Property feature",
