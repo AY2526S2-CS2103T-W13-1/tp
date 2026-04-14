@@ -70,18 +70,21 @@ Format: `addClient n/NAME c/CONTACT_NUMBER e/EMAIL [t/TAG]…`
 
 * `NAME` can only be composed of alphanumeric characters, `-` , `'`, `,` or `/`.
 * Clients must have a unique `CONTACT_NUMBER` and `EMAIL`.
+* `CONTACT_NUMBER` should only contain digits and must be exactly 8 digits long.
+* `Tag` should only contain alphanumeric characters and cannot include spaces, hyphens, or underscores.
 
 <box type="tip" seamless>
 
 **Tip:**
 
 - A client can have any number of tags (including 0).
+- Two clients with the same `CONTACT_NUMBER` or `EMAIL` are considered duplicate clients.
   </box>
 
 Examples:
 
 * `addClient n/John Doe c/98765432 e/johnd@example.com`
-* `addClient n/Betsy Crowe t/friend e/betsycrowe@example.com c/1234567 t/mother`
+* `addClient n/Betsy Crowe t/friend e/betsycrowe@example.com c/12345678 t/seller`
 
 ### Adding a property: `addProperty`
 
@@ -91,23 +94,30 @@ Adds a property to the client identified by the index number in the displayed cl
 Format: `addProperty i/INDEX a/ADDRESS pr/PRICE s/SIZE type/TYPE`
 
 * `INDEX` refers to the index number shown in the displayed list on the client tab. It must be a positive integer.
-* `ADDRESS` is case insensitive. e.g. ClientVault will recognise `clementi` as `Clementi`.
-* Properties must have a unique address.
-* `TYPE` is case-insensitive. e.g. `condo` will be stored as `Condo` and `hDB` will be stored as `HDB`.
+* `ADDRESS` is case-insensitive, must not be blank, must be at most 100 characters long, and can only contain letters, numbers, spaces, and the characters `, . # -`. e.g., `clementi` will be recognised as `Clementi`.
+* Properties must have unique addresses.
+* `PRICE` must contain only digits and be at most 10 digits long.
+* `SIZE` must contain only digits and be at most 10 digits long.
+* `TYPE` must be either `HDB` or `Condo` (case-insensitive). e.g., `condo` will be stored as `Condo` and `hDB` will be stored as `HDB`.
 
 <box type="tip" seamless>
-<box type="warning" seamless>
-**Warning:**
 
-- A property cannot be assigned to multiple clients.
-- Each property can only have one owner
-- A client cannot legally own more than 1 HDB as it is not possible
 
 **Tip:**
 
 - Use the `list` command to view the indices of clients before adding a property.
 - Each property can only belong to one client.
 - The `type/TYPE` field is case insensitive. 
+
+</box>
+
+<box type="warning" seamless>
+
+**Warning:**
+
+- Each property can only have one owner. A property cannot be assigned to multiple clients.
+- Two properties with the same `ADDRESS` are considered duplicate properties.
+- A client cannot legally own more than 1 HDB as it is not possible
 
 </box>
 
@@ -161,6 +171,8 @@ Format: `editClient INDEX [n/NAME] [c/CONTACT_NUMBER] [e/EMAIL] [t/TAG]...`
 * Narrows to the client at the specified `INDEX` and the properties they own.
 * `INDEX` refers to the index number shown in the displayed list on the client tab. It must be a positive integer.
 * `NAME` can only be composed of alphanumeric characters, `-` , `'`, `,` or `/`.
+* `CONTACT_NUMBER` should only contain digits and must be exactly 8 digits long.
+* `Tag` should only contain alphanumeric characters and cannot include spaces, hyphens, or underscores.
 * At least one of the optional fields must be provided.
 * If one or more `t/` prefixes are provided, the client’s existing tags will be replaced.
 
@@ -169,6 +181,7 @@ Format: `editClient INDEX [n/NAME] [c/CONTACT_NUMBER] [e/EMAIL] [t/TAG]...`
 **Tip:**
 
 - Only the specified fields will be updated; all other fields will remain unchanged.
+- Two clients with the same `CONTACT_NUMBER` or `EMAIL` are considered duplicate clients.
 - You can use `t/` without a value to clear all existing tags.
 
 </box>
@@ -183,14 +196,19 @@ Examples:
 ### Editing a property: `editProperty`
 
 ![editProperty](images/editProperty.png)
+
 Edits the property identified by the index number in the displayed property list.
 Existing values will be overwritten by the input values.
 
 Format: `editProperty INDEX [a/ADDRESS] [pr/PRICE] [s/SIZE] [type/TYPE]`
 
 * Narrows to the property at the specified `INDEX` in the property list.
-* The index refers to the index number shown in the displayed list on the property tab. It must be a positive integer.
+* `INDEX` refers to the index number shown in the displayed list on the property tab. It must be a positive integer.
 * At least one of the optional fields must be provided.
+* `ADDRESS` is case-insensitive, must not be blank, must be at most 100 characters long, and can only contain letters, numbers, spaces, and the characters `, . # -`.
+* `PRICE` must contain only digits and be at most 10 digits long.
+* `SIZE` must contain only digits and be at most 10 digits long.
+* `TYPE` must be either `HDB` or `Condo` (case-insensitive).
 
 <box type="tip" seamless>
 
@@ -198,6 +216,16 @@ Format: `editProperty INDEX [a/ADDRESS] [pr/PRICE] [s/SIZE] [type/TYPE]`
 
 - Use the `list` command to view the indices of properties before editing a property.
 - Only the specified fields will be updated; all other fields will remain unchanged.
+
+</box>
+
+<box type="warning" seamless>
+
+**Warning:**
+
+- Two properties with the same `ADDRESS` are considered duplicates.
+- Each property has exactly one owner and cannot be assigned to multiple clients.
+- A client cannot own more than one HDB property.
 
 </box>
 
@@ -430,21 +458,21 @@ _Details coming soon ..._
 ## Command summary
 
 
-| Action              | Format, Examples                                                                                                                                                               |
-| --------------------- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Help**            | `help`                                                                                                                                                                         |
-| **Add Client**      | `addClient n/NAME c/CONTACT_NUMBER e/EMAIL [t/TAG]…` <br> e.g., `addClient n/James Ho c/22224444 e/jamesho@example.com t/friend t/colleague`                                   |
-| **Add Property**    | `addProperty i/INDEX a/ADDRESS pr/PRICE s/SIZE type/TYPE` <br> e.g., `addProperty i/1 a/311 Clementi Ave 2, #02-25 pr/1200000 s/1200 type/HDB`                                 |
-| **List**            | `list`                                                                                                                                                                         |
-| **View Client**     | `viewClient INDEX` <br> e.g., `viewClient 1`                                                                                                                                   |
-| **View Property**   | `viewProperty INDEX` <br> e.g., `viewProperty 1`                                                                                                                               |
-| **Edit Client**     | `editClient INDEX [n/NAME] [c/CONTACT_NUMBER] [e/EMAIL] [t/TAG]...`<br> e.g., `editClient 2 n/Alex Yeoh`                                                                       |
-| **Edit Property**   | `editProperty INDEX [a/ADDRESS] [pr/PRICE] [s/SIZE] [type/TYPE]`<br> e.g., `editProperty 1 a/123 Clementi Road pr/500000 s/1200 type/HDB`                                      |
-| **Remark Property** | `remarkProperty PROPERTY_INDEX  r/REMARK` <br> e.g., `remarkProperty 2 r/Near Chinese Garden MRT`                                                                              |
-| **Filter Client**   | `filterClient [n/NAME_KEYWORDS] [t/TAG_KEYWORDS]`<br> e.g., `filterClient n/James Jake t/friends`                                                                              |
+| Action              | Format, Examples                                                                                                                                                      |
+| --------------------- |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Help**            | `help`                                                                                                                                                                |
+| **Add Client**      | `addClient n/NAME c/CONTACT_NUMBER e/EMAIL [t/TAG]…` <br> e.g., `addClient n/James Ho c/22224444 e/jamesho@example.com t/seller`                                      |
+| **Add Property**    | `addProperty i/INDEX a/ADDRESS pr/PRICE s/SIZE type/TYPE` <br> e.g., `addProperty i/1 a/311 Clementi Ave 2, #02-25 pr/1200000 s/1200 type/HDB`                        |
+| **List**            | `list`                                                                                                                                                                |
+| **View Client**     | `viewClient INDEX` <br> e.g., `viewClient 1`                                                                                                                          |
+| **View Property**   | `viewProperty INDEX` <br> e.g., `viewProperty 1`                                                                                                                      |
+| **Edit Client**     | `editClient INDEX [n/NAME] [c/CONTACT_NUMBER] [e/EMAIL] [t/TAG]...`<br> e.g., `editClient 2 n/Alex Yeoh`                                                              |
+| **Edit Property**   | `editProperty INDEX [a/ADDRESS] [pr/PRICE] [s/SIZE] [type/TYPE]`<br> e.g., `editProperty 1 a/123 Clementi Road pr/500000 s/1200 type/HDB`                             |
+| **Remark Property** | `remarkProperty PROPERTY_INDEX  r/REMARK` <br> e.g., `remarkProperty 2 r/Near Chinese Garden MRT`                                                                     |
+| **Filter Client**   | `filterClient [n/NAME_KEYWORDS] [t/TAG_KEYWORDS]`<br> e.g., `filterClient n/James Jake t/friends`                                                                     |
 | **Filter Property** | `filterProperty [a/ADDRESS_KEYWORDS] [pr/MIN_PRICE MAX_PRICE] [s/MIN_SIZE MAX_SIZE] [type/TYPE]`<br> e.g., `filterProperty a/Clementi pr/1000000 1500000 s/1000 1500 type/HDB` |                     
-| **Sort Property**   | `sortProperty st/SORT_TYPE o/ORDER` <br> e.g., `sortProperty st/price o/up`                                                                                                    |
-| **Delete Client**   | `deleteClient INDEX`<br> e.g., `deleteClient 3`                                                                                                                                |
-| **Delete Property** | `deleteProperty INDEX`<br> e.g., `deleteProperty 3`                                                                                                                            |
-| **Clear**           | `clear`                                                                                                                                                                        |
-| **Exit**            | `exit`                                                                                                                                                                         |
+| **Sort Property**   | `sortProperty st/SORT_TYPE o/ORDER` <br> e.g., `sortProperty st/price o/up`                                                                                           |
+| **Delete Client**   | `deleteClient INDEX`<br> e.g., `deleteClient 3`                                                                                                                       |
+| **Delete Property** | `deleteProperty INDEX`<br> e.g., `deleteProperty 3`                                                                                                                   |
+| **Clear**           | `clear`                                                                                                                                                               |
+| **Exit**            | `exit`                                                                                                                                                                |
