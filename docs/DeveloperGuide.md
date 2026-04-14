@@ -461,7 +461,100 @@ _{more aspects and alternatives to be added}_
 
 ### \[Proposed\] Data archiving
 
-_{Explain here how the data archiving feature will be implemented}_
+#### Proposed Implementation
+
+The data archiving feature would allow property agents to move completed transactions (sold properties and their associated clients) to an archive, keeping the active address book focused on current listings and active clients. This improves performance and organization as the address book grows over time.
+
+The archiving mechanism would be facilitated by an `ArchiveManager` component that handles the movement of data between the active address book and an archive storage. The archive would be stored separately from the main data file to prevent accidental modification of historical records.
+
+**Key Components:**
+
+* **`ArchiveManager`** - Handles archiving operations and maintains archive data integrity
+* **`ArchiveStorage`** - Manages persistence of archived data in JSON format
+* **`ArchiveCommand`** - User command to archive completed transactions
+* **`ArchiveListCommand`** - Command to view archived data
+* **`UnarchiveCommand`** - Command to restore archived data if needed
+
+**Archive Data Structure:**
+```json
+{
+  "archivedClients": [
+    {
+      "client": {...},
+      "properties": [...],
+      "archiveDate": "2024-12-01",
+      "archiveReason": "Property sold"
+    }
+  ]
+}
+```
+
+#### Implementation Details
+
+1. **Archiving Process:**
+   - User identifies a property that has been sold using `archiveProperty INDEX reason/REASON`
+   - System validates the property exists and belongs to a client
+   - System moves the property and its associated client to the archive
+   - System removes the property from the active address book
+   - If the client has no remaining properties, the client is also archived
+
+2. **Archive Storage:**
+   - Archived data is stored in a separate JSON file (`archive.json`)
+   - Archive file is automatically created if it doesn't exist
+   - Data is encrypted if sensitive information is stored
+
+3. **Viewing Archived Data:**
+   - `listArchive` command displays archived clients and properties
+   - `viewArchive INDEX` shows detailed information of archived entries
+   - Archived data is read-only to prevent accidental modification
+
+#### Design Considerations
+
+**Aspect: Archive vs Delete**
+
+* **Alternative 1 (current choice):** Archive completed transactions
+  * Pros: Preserves historical data for reference, maintains data integrity, allows restoration if needed
+  * Cons: Increases storage requirements, adds complexity to data management
+
+* **Alternative 2:** Permanently delete completed transactions
+  * Pros: Simpler implementation, reduces storage needs, cleaner active data
+  * Cons: Loss of historical data, cannot recover accidentally deleted information
+
+**Aspect: Archive Triggers**
+
+* **Alternative 1:** Manual archiving by user command
+  * Pros: User has full control over what gets archived, prevents accidental archiving
+  * Cons: Requires user action, may lead to cluttered active data if forgotten
+
+* **Alternative 2:** Automatic archiving based on criteria (e.g., property marked as "sold")
+  * Pros: Automatic cleanup, ensures old data doesn't accumulate
+  * Cons: Risk of premature archiving, less user control
+
+**Aspect: Archive Accessibility**
+
+* **Alternative 1:** Archive data remains searchable and viewable
+  * Pros: Easy reference to historical data, maintains full functionality
+  * Cons: Slightly more complex implementation
+
+* **Alternative 2:** Archive data is compressed and offline
+  * Pros: Better performance, reduced storage impact
+  * Cons: Historical data harder to access, requires restoration process
+
+#### Benefits
+
+* **Performance:** Active address book remains focused on current clients and properties
+* **Organization:** Clear separation between active and historical data
+* **Data Integrity:** Historical records are preserved and protected from accidental modification
+* **Compliance:** Maintains audit trail for business records
+* **Scalability:** Prevents the address book from becoming unwieldy as business grows
+
+#### Potential Extensions
+
+* **Archive Search:** Allow searching within archived data
+* **Archive Reports:** Generate reports from archived transaction data
+* **Bulk Archive:** Archive multiple properties at once
+* **Archive Categories:** Categorize archives (e.g., by year, by property type)
+* **Archive Backup:** Automated backup of archive data to external storage
 
 ---
 
@@ -823,7 +916,7 @@ Goal: Clear all entries in the address book to start afresh
 
 Given below are instructions to test the app manually.
 
-<box type="info" seamless>
+<box class="info" seamless>
 
 **Note:** These instructions only provide a starting point for testers to work on;
 testers are expected to do more *exploratory* testing.
@@ -1082,6 +1175,7 @@ Team size: 5
 4. **Duplicate property error message**: When adding a property that already exists in the address book, the error message should specify which existing property has that address. For example: `A property with the address [ADDRESS] already exists, owned by client [NAME].`
 5. **Out-of-range error message**: Make the error message for out-of-range index more descriptive. When a user types a command like `deleteProperty 99` and there are fewer than 99 contacts, the current error message is `Invalid property index!` We plan to improve this to: `Index 99 is out of range. The current list has [N] properties. Please enter an index between 1 and [N].`
 6. **Improve the edit command output**: Make successful editClient show what was actually changed. Currently, a successful edit command returns `Edited Person: [all fields]`, which makes it hard to see what changed. We plan to update the success message to show only the fields that were modified: e.g., `Edited contact Alex Yeoh: phone updated from 91234567 to 98765432.` This can be extended to editProperty as well, e.g., `Edited property 1: price updated from $500,000 to $550,000.`
+7. **Strengthen client details validation**: Currently, the validation of client details is that `p/Phone` must be 8 digits and `e/Email` must contain an `@` symbol. We plan to enhance this validation to ensure that the phone number starts with 6, 8, or 9, and that the email has a valid format (e.g., contains a valid domain name after the `@` symbol).
 
 ## **Appendix: Effort** ##
 
